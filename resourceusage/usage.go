@@ -5,12 +5,52 @@ import (
 	"fmt"
 	"log"
 	"runtime"
+	"sync"
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/mem"
 	"github.com/shirou/gopsutil/net"
+)
+
+var (
+	diskIOMutex    sync.Mutex
+	prevDiskReads  uint64
+	prevDiskWrites uint64
+
+	netMutex    sync.Mutex
+	prevNetSent uint64
+	prevNetRecv uint64
+)
+
+type (
+	cpuResult struct {
+		percent float64
+		err     error
+	}
+	ramResult struct {
+		used    uint64
+		total   uint64
+		percent float64
+		err     error
+	}
+	diskResult struct {
+		used    uint64
+		total   uint64
+		percent float64
+		err     error
+	}
+	diskIOResult struct {
+		reads  uint64
+		writes uint64
+		err    error
+	}
+	networkResult struct {
+		sent uint64
+		recv uint64
+		err  error
+	}
 )
 
 func getCPUUsage() (float64, error) {
@@ -82,29 +122,23 @@ func formatBytes(bytes uint64) string {
 }
 
 func LogUsage() {
-	interval := flag.Int("interval", 5, "Interval in seconds between measurements")
+	interval := flag.Int("interval", 1, "Interval in seconds between measurements")
 	flag.Parse()
 
-	// Initialize previous values for delta calculations
-	var (
-		prevDiskReads, prevDiskWrites uint64
-		prevNetSent, prevNetRecv      uint64
-	)
-
 	// Get initial disk IO and network stats
-	if reads, writes, err := getDiskIO(); err == nil {
-		prevDiskReads = reads
-		prevDiskWrites = writes
-	} else {
-		log.Printf("Error getting initial disk IO: %v", err)
+	reads, writes, err := getDiskIO()
+	if err != nil {
+		log.Fatalf("Initial disk IO error: %v", err) // zatrzymaj program
 	}
+	prevDiskReads = reads
+	prevDiskWrites = writes
 
-	if sent, recv, err := getNetworkIO(); err == nil {
-		prevNetSent = sent
-		prevNetRecv = recv
-	} else {
-		log.Printf("Error getting initial network IO: %v", err)
+	sent, recv, err := getNetworkIO()
+	if err != nil {
+		log.Fatalf("Initial network error: %v", err) // zatrzymaj program
 	}
+	prevNetSent = sent
+	prevNetRecv = recv
 
 	// Initial CPU reading to avoid 0.0% on first interval
 	_, _ = cpu.Percent(0, false)
@@ -115,46 +149,85 @@ func LogUsage() {
 	for range ticker.C {
 		now := time.Now().Format("2006-01-02 15:04:05")
 
-		// CPU
-		cpuPercent, err := getCPUUsage()
-		if err != nil {
-			log.Printf("Error getting CPU usage: %v", err)
-		}
+		// Utwórz kanały
+		cpuCh := make(chan cpuResult, 1)
+		ramCh := make(chan ramResult, 1)
+		diskCh := make(chan diskResult, 1)
+		diskIOCh := make(chan diskIOResult, 1)
+		networkCh := make(chan networkResult, 1)
 
-		// RAM
-		ramUsed, ramTotal, ramPercent, err := getRAMUsage()
-		if err != nil {
-			log.Printf("Error getting RAM usage: %v", err)
-		}
+		// Uruchom równoległe zbieranie metryk
+		go func() {
+			p, err := getCPUUsage()
+			cpuCh <- cpuResult{p, err}
+		}()
 
-		// Disk Space
-		diskUsed, diskTotal, diskPercent, err := getDiskUsage()
-		if err != nil {
-			log.Printf("Error getting disk usage: %v", err)
-		}
+		go func() {
+			u, t, p, err := getRAMUsage()
+			ramCh <- ramResult{u, t, p, err}
+		}()
 
-		// Disk IO
-		currentReads, currentWrites, err := getDiskIO()
+		go func() {
+			u, t, p, err := getDiskUsage()
+			diskCh <- diskResult{u, t, p, err}
+		}()
+
+		go func() {
+			r, w, err := getDiskIO()
+			diskIOCh <- diskIOResult{r, w, err}
+		}()
+
+		go func() {
+			s, r, err := getNetworkIO()
+			networkCh <- networkResult{s, r, err}
+		}()
+
+		// Zbierz wyniki
+		cpuRes := <-cpuCh
+		ramRes := <-ramCh
+		diskRes := <-diskCh
+		diskIORes := <-diskIOCh
+		networkRes := <-networkCh
+
+		// Przetwórz wyniki
+		if cpuRes.err != nil {
+			log.Printf("CPU error: %v", cpuRes.err)
+		}
+		cpuPercent := cpuRes.percent
+
+		if ramRes.err != nil {
+			log.Printf("RAM error: %v", ramRes.err)
+		}
+		ramUsed, ramTotal, ramPercent := ramRes.used, ramRes.total, ramRes.percent
+
+		if diskRes.err != nil {
+			log.Printf("Disk error: %v", diskRes.err)
+		}
+		diskUsed, diskTotal, diskPercent := diskRes.used, diskRes.total, diskRes.percent
+
+		// Przetwarzanie IO z synchronizacją
 		var diskReads, diskWrites uint64
-		if err == nil {
-			diskReads = currentReads - prevDiskReads
-			diskWrites = currentWrites - prevDiskWrites
-			prevDiskReads = currentReads
-			prevDiskWrites = currentWrites
+		if diskIORes.err == nil {
+
+			diskReads = diskIORes.reads - prevDiskReads
+			diskWrites = diskIORes.writes - prevDiskWrites
+			prevDiskReads = diskIORes.reads
+			prevDiskWrites = diskIORes.writes
+
 		} else {
-			log.Printf("Error getting disk IO: %v", err)
+			log.Printf("Disk IO error: %v", diskIORes.err)
 		}
 
-		// Network
-		currentSent, currentRecv, err := getNetworkIO()
 		var netSent, netRecv uint64
-		if err == nil {
-			netSent = currentSent - prevNetSent
-			netRecv = currentRecv - prevNetRecv
-			prevNetSent = currentSent
-			prevNetRecv = currentRecv
+		if networkRes.err == nil {
+
+			netSent = networkRes.sent - prevNetSent
+			netRecv = networkRes.recv - prevNetRecv
+			prevNetSent = networkRes.sent
+			prevNetRecv = networkRes.recv
+
 		} else {
-			log.Printf("Error getting network IO: %v", err)
+			log.Printf("Network error: %v", networkRes.err)
 		}
 
 		// Display results
