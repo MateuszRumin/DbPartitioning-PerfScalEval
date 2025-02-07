@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
-
-	"perfscaleval/resourceusage"
+	//"perfscaleval/resourceusage"
 )
 
 func main() {
 	fmt.Println("program")
 
-	resourceusage.LogUsage()
+	//resourceusage.LogUsage()
 }

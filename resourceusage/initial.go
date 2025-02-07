@@ -6,9 +6,9 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
-func initial() (uint64, uint64, uint64, uint64) {
+func initial() (map[string]uint64, map[string]uint64, map[string]uint64, map[string]uint64, map[string]uint64, map[string]uint64, uint64, uint64) {
 	// Get initial disk IO and network stats
-	reads, writes, err := getDiskIO()
+	readsCount, writesCount, readBytes, writeBytes, readTime, writeTime, err := getDiskIO()
 	if err != nil {
 		log.Fatalf("Initial disk IO error: %v", err) // zatrzymaj program
 	}
@@ -25,5 +25,5 @@ func initial() (uint64, uint64, uint64, uint64) {
 	// Initial CPU reading to avoid 0.0% on first interval
 	_, _ = cpu.Percent(0, false)
 
-	return reads, writes, sent, recv
+	return readsCount, writesCount, readBytes, writeBytes, readTime, writeTime, sent, recv
 }

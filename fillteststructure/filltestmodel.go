@@ -2,6 +2,6 @@ package main
 
 import "fmt"
 
-func fill() {
+func main() {
 	fmt.Println("Testy")
 }

@@ -10,8 +10,12 @@ import (
 )
 
 var (
-	prevDiskReads  uint64
-	prevDiskWrites uint64
+	prevReadsCount  map[string]uint64
+	prevWritesCount map[string]uint64
+	prevReadBytes   map[string]uint64
+	prevWriteBytes  map[string]uint64
+	prevReadTime    map[string]uint64
+	prevWriteTime   map[string]uint64
 
 	prevNetSent uint64
 	prevNetRecv uint64
@@ -29,9 +33,13 @@ type (
 		err     error
 	}
 	diskIOResult struct {
-		reads  uint64
-		writes uint64
-		err    error
+		readCount  map[string]uint64
+		writeCount map[string]uint64
+		readBytes  map[string]uint64
+		writeBytes map[string]uint64
+		readTime   map[string]uint64
+		writeTime  map[string]uint64
+		err        error
 	}
 	networkResult struct {
 		sent uint64
@@ -44,7 +52,7 @@ func main() {
 	interval := flag.Int("interval", 1, "Interval in seconds between measurements")
 	flag.Parse()
 
-	prevDiskReads, prevDiskWrites, prevNetSent, prevNetRecv = initial()
+	prevReadsCount, prevWritesCount, prevReadBytes, prevWriteBytes, prevReadTime, prevWriteTime, prevNetSent, prevNetRecv = initial()
 
 	ticker := time.NewTicker(time.Duration(*interval) * time.Second)
 	defer ticker.Stop()
@@ -69,8 +77,8 @@ func main() {
 			ramCh <- ramResult{u, t, p, err}
 		}()
 		go func() {
-			r, w, err := getDiskIO()
-			diskIOCh <- diskIOResult{r, w, err}
+			rc, wc, rm, wm, rt, wt, err := getDiskIO()
+			diskIOCh <- diskIOResult{rc, wc, rm, wm, rt, wt, err}
 		}()
 
 		go func() {
@@ -96,14 +104,46 @@ func main() {
 		ramUsed, ramTotal, ramPercent := ramRes.used, ramRes.total, ramRes.percent
 
 		// Przetwarzanie IO z synchronizacją
-		var diskReads, diskWrites uint64
+		var readsCount, writesCount, readBytes, writeBytes, readTime, writeTime map[string]uint64
 		if diskIORes.err == nil {
+			readsCount = make(map[string]uint64)
+			writesCount = make(map[string]uint64)
+			readBytes = make(map[string]uint64)
+			writeBytes = make(map[string]uint64)
+			readTime = make(map[string]uint64)
+			writeTime = make(map[string]uint64)
 
-			diskReads = diskIORes.reads - prevDiskReads
-			diskWrites = diskIORes.writes - prevDiskWrites
-			prevDiskReads = diskIORes.reads
-			prevDiskWrites = diskIORes.writes
+			for device, current := range diskIORes.readCount {
+				prev := prevReadsCount[device]
+				readsCount[device] = current - prev
+			}
+			for device, current := range diskIORes.writeCount {
+				prev := prevWritesCount[device]
+				writesCount[device] = current - prev
+			}
+			for device, current := range diskIORes.readBytes {
+				prev := prevReadBytes[device]
+				readBytes[device] = current - prev
+			}
+			for device, current := range diskIORes.writeBytes {
+				prev := prevWriteBytes[device]
+				writeBytes[device] = current - prev
+			}
+			for device, current := range diskIORes.readTime {
+				prev := prevReadTime[device]
+				readTime[device] = current - prev
+			}
+			for device, current := range diskIORes.writeTime {
+				prev := prevWriteTime[device]
+				writeTime[device] = current - prev
+			}
 
+			prevReadsCount = diskIORes.readCount
+			prevWritesCount = diskIORes.writeCount
+			prevReadBytes = diskIORes.readBytes
+			prevWriteBytes = diskIORes.writeBytes
+			prevReadTime = diskIORes.readTime
+			prevWriteTime = diskIORes.writeTime
 		} else {
 			log.Printf("Disk IO error: %v", diskIORes.err)
 		}
@@ -128,7 +168,15 @@ func main() {
 			formatBytes(ramTotal),
 			ramPercent,
 		)
-		fmt.Printf("Disk IO: Reads=%d, Writes=%d\n", diskReads, diskWrites)
+		//fmt.Printf("Disk IO: Reads=%d, Writes=%d\n", diskReads, diskWrites)
+		for device := range readsCount {
+			log.Printf("[%s] Disk IO - Device %s: Reads=%d, Writes=%d",
+				now, device, readsCount[device], writesCount[device])
+			log.Printf("[%s] Disk Usage - Device %s: Read=%s, Write=%s",
+				now, device, formatBytes(readBytes[device]), formatBytes(writeBytes[device]))
+			log.Printf("[%s] Disk Time - Device %s: Read Time=%dms, Write Time=%dms\n",
+				now, device, readTime[device], writeTime[device])
+		}
 		fmt.Printf("Network: Sent=%s, Received=%s\n",
 			formatBytes(netSent),
 			formatBytes(netRecv),
