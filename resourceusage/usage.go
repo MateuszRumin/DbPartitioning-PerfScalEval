@@ -1,25 +1,18 @@
-package resourceusage
+// package resourceusage
+package main
 
 import (
 	"flag"
 	"fmt"
 	"log"
-	"runtime"
-	"sync"
-	"time"
 
-	"github.com/shirou/gopsutil/cpu"
-	"github.com/shirou/gopsutil/disk"
-	"github.com/shirou/gopsutil/mem"
-	"github.com/shirou/gopsutil/net"
+	"time"
 )
 
 var (
-	diskIOMutex    sync.Mutex
 	prevDiskReads  uint64
 	prevDiskWrites uint64
 
-	netMutex    sync.Mutex
 	prevNetSent uint64
 	prevNetRecv uint64
 )
@@ -53,95 +46,11 @@ type (
 	}
 )
 
-func getCPUUsage() (float64, error) {
-	percent, err := cpu.Percent(0, false)
-	if err != nil {
-		return 0, err
-	}
-	if len(percent) == 0 {
-		return 0, fmt.Errorf("no CPU data available")
-	}
-	return percent[0], nil
-}
-
-func getRAMUsage() (uint64, uint64, float64, error) {
-	memInfo, err := mem.VirtualMemory()
-	if err != nil {
-		return 0, 0, 0, err
-	}
-	return memInfo.Used, memInfo.Total, memInfo.UsedPercent, nil
-}
-
-func getDiskUsage() (uint64, uint64, float64, error) {
-	path := "/"
-	if runtime.GOOS == "windows" {
-		path = "C:"
-	}
-	diskInfo, err := disk.Usage(path)
-	if err != nil {
-		return 0, 0, 0, err
-	}
-	return diskInfo.Used, diskInfo.Total, diskInfo.UsedPercent, nil
-}
-
-func getDiskIO() (uint64, uint64, error) {
-	ioCounters, err := disk.IOCounters()
-	if err != nil {
-		return 0, 0, err
-	}
-	var reads, writes uint64
-	for _, counter := range ioCounters {
-		reads += counter.ReadCount
-		writes += counter.WriteCount
-	}
-	return reads, writes, nil
-}
-
-func getNetworkIO() (uint64, uint64, error) {
-	ioCounters, err := net.IOCounters(false)
-	if err != nil {
-		return 0, 0, err
-	}
-	if len(ioCounters) == 0 {
-		return 0, 0, fmt.Errorf("no network counters found")
-	}
-	return ioCounters[0].BytesSent, ioCounters[0].BytesRecv, nil
-}
-
-func formatBytes(bytes uint64) string {
-	const unit = 1024
-	if bytes < unit {
-		return fmt.Sprintf("%d B", bytes)
-	}
-	div, exp := uint64(unit), 0
-	for n := bytes / unit; n >= unit; n /= unit {
-		div *= unit
-		exp++
-	}
-	return fmt.Sprintf("%.2f %cB", float64(bytes)/float64(div), "KMGTPE"[exp])
-}
-
-func LogUsage() {
+func main() {
 	interval := flag.Int("interval", 1, "Interval in seconds between measurements")
 	flag.Parse()
 
-	// Get initial disk IO and network stats
-	reads, writes, err := getDiskIO()
-	if err != nil {
-		log.Fatalf("Initial disk IO error: %v", err) // zatrzymaj program
-	}
-	prevDiskReads = reads
-	prevDiskWrites = writes
-
-	sent, recv, err := getNetworkIO()
-	if err != nil {
-		log.Fatalf("Initial network error: %v", err) // zatrzymaj program
-	}
-	prevNetSent = sent
-	prevNetRecv = recv
-
-	// Initial CPU reading to avoid 0.0% on first interval
-	_, _ = cpu.Percent(0, false)
+	prevDiskReads, prevDiskWrites, prevNetSent, prevNetRecv = initial()
 
 	ticker := time.NewTicker(time.Duration(*interval) * time.Second)
 	defer ticker.Stop()
