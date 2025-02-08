@@ -162,25 +162,29 @@ func main() {
 
 		// Display results
 		fmt.Printf("[%s]\n", now)
-		fmt.Printf("CPU Usage: %.2f%%\n", cpuPercent)
-		fmt.Printf("RAM Usage: %s / %s (%.2f%%)\n",
-			formatBytes(ramUsed),
-			formatBytes(ramTotal),
+		fmt.Printf("CPU Usage: %.10f %%\n", cpuPercent)
+		fmt.Printf("RAM Usage: %d / %d (%.2f  %%)\n",
+			ramUsed,
+			ramTotal,
 			ramPercent,
 		)
 		//fmt.Printf("Disk IO: Reads=%d, Writes=%d\n", diskReads, diskWrites)
 		for device := range readsCount {
-			log.Printf("[%s] Disk IO - Device %s: Reads=%d, Writes=%d",
-				now, device, readsCount[device], writesCount[device])
-			log.Printf("[%s] Disk Usage - Device %s: Read=%s, Write=%s",
-				now, device, formatBytes(readBytes[device]), formatBytes(writeBytes[device]))
-			log.Printf("[%s] Disk Time - Device %s: Read Time=%dms, Write Time=%dms\n",
-				now, device, readTime[device], writeTime[device])
+			log.Printf("Disk IO - Device %s || ReadsCount=%d, WritesCount=%d || ReadsBytes=%d, WritesBytes=%d || Read Time=%dms, Write Time=%dms",
+				device,
+				readsCount[device],
+				writesCount[device],
+				readBytes[device],
+				writeBytes[device],
+				readTime[device],
+				writeTime[device])
 		}
-		fmt.Printf("Network: Sent=%s, Received=%s\n",
-			formatBytes(netSent),
-			formatBytes(netRecv),
+		fmt.Printf("Network: Sent=%d, Received=%d\n",
+			netSent,
+			netRecv,
 		)
 		fmt.Println("----------------------------------------")
 	}
 }
+
+//formatBytes(readBytes[device]),  %s

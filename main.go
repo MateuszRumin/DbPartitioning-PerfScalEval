@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	fmt.Println("program")
+	fmt.Println("placeholder")
 
 	//resourceusage.LogUsage()
 }

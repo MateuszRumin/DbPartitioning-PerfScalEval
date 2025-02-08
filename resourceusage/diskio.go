@@ -4,6 +4,10 @@ import (
 	"github.com/shirou/gopsutil/disk"
 )
 
+var (
+	allowedDevices = map[string]bool{"C:": true, "F:": true}
+)
+
 func getDiskIO() (map[string]uint64, map[string]uint64, map[string]uint64, map[string]uint64, map[string]uint64, map[string]uint64, error) {
 	ioCounters, err := disk.IOCounters()
 	if err != nil {
@@ -17,12 +21,14 @@ func getDiskIO() (map[string]uint64, map[string]uint64, map[string]uint64, map[s
 	writeTime := make(map[string]uint64)
 
 	for device, counter := range ioCounters {
-		readsCount[device] = counter.ReadCount
-		readBytes[device] = counter.ReadBytes
-		readTime[device] = counter.ReadTime
-		writesCount[device] = counter.WriteCount
-		writeBytes[device] = counter.WriteBytes
-		writeTime[device] = counter.WriteTime
+		if allowedDevices[device] {
+			readsCount[device] = counter.ReadCount
+			readBytes[device] = counter.ReadBytes
+			readTime[device] = counter.ReadTime
+			writesCount[device] = counter.WriteCount
+			writeBytes[device] = counter.WriteBytes
+			writeTime[device] = counter.WriteTime
+		}
 	}
 
 	return readsCount, writesCount, readBytes, writeBytes, readTime, writeTime, nil
