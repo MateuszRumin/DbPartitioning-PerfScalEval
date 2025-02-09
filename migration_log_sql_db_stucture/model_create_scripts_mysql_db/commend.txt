@@ -1,0 +1,7 @@
+
+
+source ../log.sql;
+
+
+
+source ../migration1_mysqltestlogmodel.sql;

@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func formatBytes(bytes uint64) string {
+func FormatBytes(bytes uint64) string {
 	const unit = 1024
 	if bytes < unit {
 		return fmt.Sprintf("%d B", bytes)
