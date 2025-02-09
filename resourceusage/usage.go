@@ -67,24 +67,13 @@ func main() {
 		networkCh := make(chan networkResult, 1)
 
 		// Uruchom równoległe zbieranie metryk
-		go func() {
-			p, err := getCPUUsage()
-			cpuCh <- cpuResult{p, err}
-		}()
-
-		go func() {
-			u, t, p, err := getRAMUsage()
-			ramCh <- ramResult{u, t, p, err}
-		}()
+		go func() { p, err := getCPUUsage(); cpuCh <- cpuResult{p, err} }()
+		go func() { u, t, p, err := getRAMUsage(); ramCh <- ramResult{u, t, p, err} }()
 		go func() {
 			rc, wc, rm, wm, rt, wt, err := getDiskIO()
 			diskIOCh <- diskIOResult{rc, wc, rm, wm, rt, wt, err}
 		}()
-
-		go func() {
-			s, r, err := getNetworkIO()
-			networkCh <- networkResult{s, r, err}
-		}()
+		go func() { s, r, err := getNetworkIO(); networkCh <- networkResult{s, r, err} }()
 
 		// Zbierz wyniki
 		cpuRes := <-cpuCh
@@ -160,31 +149,54 @@ func main() {
 			log.Printf("Network error: %v", networkRes.err)
 		}
 
+		disk1Name := "C:"
+		disk2Name := "F:"
+
+		// Pobierz wartości dla dysku C:
+		disk1Reads := getDiskValue(readsCount, disk1Name)
+		disk1Writes := getDiskValue(writesCount, disk1Name)
+		disk1RBytes := getDiskValue(readBytes, disk1Name)
+		disk1WBytes := getDiskValue(writeBytes, disk1Name)
+		disk1RTime := getDiskValue(readTime, disk1Name)
+		disk1WTime := getDiskValue(writeTime, disk1Name)
+
+		// Pobierz wartości dla dysku F:
+		disk2Reads := getDiskValue(readsCount, disk2Name)
+		disk2Writes := getDiskValue(writesCount, disk2Name)
+		disk2RBytes := getDiskValue(readBytes, disk2Name)
+		disk2WBytes := getDiskValue(writeBytes, disk2Name)
+		disk2RTime := getDiskValue(readTime, disk2Name)
+		disk2WTime := getDiskValue(writeTime, disk2Name)
+
 		// Display results
-		fmt.Printf("[%s]\n", now)
-		fmt.Printf("CPU Usage: %.10f %%\n", cpuPercent)
+		fmt.Printf("[%s]\n",
+			now)
+
+		fmt.Printf("CPU Usage: %.10f %%\n",
+			cpuPercent)
+
 		fmt.Printf("RAM Usage: %d / %d (%.2f  %%)\n",
-			ramUsed,
-			ramTotal,
-			ramPercent,
-		)
-		//fmt.Printf("Disk IO: Reads=%d, Writes=%d\n", diskReads, diskWrites)
-		for device := range readsCount {
-			log.Printf("Disk IO - Device %s || ReadsCount=%d, WritesCount=%d || ReadsBytes=%d, WritesBytes=%d || Read Time=%dms, Write Time=%dms",
-				device,
-				readsCount[device],
-				writesCount[device],
-				readBytes[device],
-				writeBytes[device],
-				readTime[device],
-				writeTime[device])
-		}
+			ramUsed, ramTotal, ramPercent)
+
+		log.Printf("Disk IO - Device %s || ReadsCount=%d, WritesCount=%d || ReadsBytes=%d, WritesBytes=%d || Read Time=%dms, Write Time=%dms",
+			disk1Name, disk1Reads, disk1Writes, disk1RBytes, disk1WBytes, disk1RTime, disk1WTime)
+
+		log.Printf("Disk IO - Device %s || ReadsCount=%d, WritesCount=%d || ReadsBytes=%d, WritesBytes=%d || Read Time=%dms, Write Time=%dms",
+			disk2Name, disk2Reads, disk2Writes, disk2RBytes, disk2WBytes, disk2RTime, disk2WTime)
+
 		fmt.Printf("Network: Sent=%d, Received=%d\n",
-			netSent,
-			netRecv,
-		)
+			netSent, netRecv)
+
 		fmt.Println("----------------------------------------")
 	}
+
 }
 
 //formatBytes(readBytes[device]),  %s
+
+func getDiskValue(m map[string]uint64, device string) uint64 {
+	if val, ok := m[device]; ok {
+		return val
+	}
+	return 0
+}

@@ -33,5 +33,3 @@ func getDiskIO() (map[string]uint64, map[string]uint64, map[string]uint64, map[s
 
 	return readsCount, writesCount, readBytes, writeBytes, readTime, writeTime, nil
 }
-
-// (1024 * 1024)

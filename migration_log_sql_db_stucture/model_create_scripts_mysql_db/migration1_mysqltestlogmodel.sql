@@ -12,7 +12,7 @@ CREATE TABLE resource_usages (
     ram_percent         DECIMAL(5,2),     -- Procentowe użycie RAM 
     
     -- Dane dla pierwszego dysku 
-    disk1_name          
+    disk1_name          VARCHAR(20),
     disk1_reads         BIGINT,           -- Liczba odczytów
     disk1_writes        BIGINT,           -- Liczba zapisów
     disk1_read_bytes    BIGINT,           -- Bajty odczytane
@@ -21,7 +21,7 @@ CREATE TABLE resource_usages (
     disk1_write_time    BIGINT,           -- Czas zapisu (ms)
     
     -- Dane dla drugiego dysku
-    disk_2_name 
+    disk_2_name         VARCHAR(20),
     disk2_reads         BIGINT,
     disk2_writes        BIGINT,
     disk2_read_bytes    BIGINT,
