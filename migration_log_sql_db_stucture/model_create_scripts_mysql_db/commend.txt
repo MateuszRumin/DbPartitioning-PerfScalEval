@@ -1,8 +1,6 @@
 
 
-source ../log.sql;
 
+source C:/scripts/logdb.sql
 
-
-
-source ../migration1_mysqltestlogmodel.sql;
+source C:/scripts/migration1mysqltestlogmodel.sql;

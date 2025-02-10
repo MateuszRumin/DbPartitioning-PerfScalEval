@@ -21,7 +21,7 @@ CREATE TABLE resource_usages (
     disk1_write_time    BIGINT,           -- Czas zapisu (ms)
     
     -- Dane dla drugiego dysku
-    disk_2_name         VARCHAR(20),
+    disk2_name          VARCHAR(20),
     disk2_reads         BIGINT,
     disk2_writes        BIGINT,
     disk2_read_bytes    BIGINT,
