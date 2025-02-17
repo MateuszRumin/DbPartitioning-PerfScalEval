@@ -22,6 +22,7 @@ func GenerateBadge() dbstrucglobalfakeit.Badge {
 
 func GenerateComments() dbstrucglobalfakeit.Comment {
 	var generated dbstrucglobalfakeit.Comment
+
 	err := gofakeit.Struct(&generated)
 	if err != nil {
 		fmt.Println("Błąd generacji")
@@ -31,6 +32,7 @@ func GenerateComments() dbstrucglobalfakeit.Comment {
 
 func GeneratePostHistory() dbstrucglobalfakeit.PostHistory {
 	var generated dbstrucglobalfakeit.PostHistory
+
 	err := gofakeit.Struct(&generated)
 	if err != nil {
 		fmt.Println("Błąd generacji")
@@ -40,6 +42,7 @@ func GeneratePostHistory() dbstrucglobalfakeit.PostHistory {
 
 func GeneratePostsLinks() dbstrucglobalfakeit.PostLink {
 	var generated dbstrucglobalfakeit.PostLink
+
 	err := gofakeit.Struct(&generated)
 	if err != nil {
 		fmt.Println("Błąd generacji")
@@ -59,6 +62,7 @@ func GeneratePosts() dbstrucglobalfakeit.Post {
 
 func GenerateUsers() dbstrucglobalfakeit.User {
 	var generated dbstrucglobalfakeit.User
+
 	err := gofakeit.Struct(&generated)
 	if err != nil {
 		fmt.Println("Błąd generacji")
@@ -68,6 +72,7 @@ func GenerateUsers() dbstrucglobalfakeit.User {
 
 func GenerateVote() dbstrucglobalfakeit.Vote {
 	var generated dbstrucglobalfakeit.Vote
+
 	err := gofakeit.Struct(&generated)
 	if err != nil {
 		fmt.Println("Błąd generacji")
