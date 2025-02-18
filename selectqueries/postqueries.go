@@ -32,7 +32,7 @@ var IdsecectPostLimit = []string{
 	"SELECT * FROM posts WHERE id =45 limit 1;",
 }
 
-var postTypesecectPost = []string{
+var PostTypesecectPost = []string{
 	"SELECT * FROM posts WHERE post_type_id = 15;",
 	"SELECT * FROM posts WHERE post_type_id = 3;",
 	"SELECT * FROM posts WHERE post_type_id = 8;",
@@ -41,7 +41,7 @@ var postTypesecectPost = []string{
 	"SELECT * FROM posts WHERE post_type_id = 1;",
 }
 
-var postTypesecectPostLimit = []string{
+var PostTypesecectPostLimit = []string{
 	"SELECT * FROM posts WHERE post_type_id = 15 limit 10;",
 	"SELECT * FROM posts WHERE post_type_id = 3 limit 10;",
 	"SELECT * FROM posts WHERE post_type_id = 8 limit 10;",
@@ -50,11 +50,11 @@ var postTypesecectPostLimit = []string{
 	"SELECT * FROM posts WHERE post_type_id = 1 limit 10;",
 }
 
-var accepdedansweridcectPost = []string{
+var AccepdedansweridcectPost = []string{
 	"SELECT * FROM posts WHERE accepted_answer_id IS NOT NULL;",
 	"SELECT * FROM posts WHERE accepted_answer_id IS NULL;",
 }
-var accepdedansweridcectPostLimit = []string{
+var AccepdedansweridcectPostLimit = []string{
 	"SELECT * FROM posts WHERE accepted_answer_id IS NOT NULL limit 10;",
 	"SELECT * FROM posts WHERE accepted_answer_id IS NULL limit 10;",
 }
