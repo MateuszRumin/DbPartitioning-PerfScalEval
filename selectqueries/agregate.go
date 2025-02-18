@@ -1,6 +1,6 @@
 package selectqueries
 
-var AgregateAnalize = []string{
+var agregateAnalize = []string{
 	// 1. Liczba odznak na użytkownika
 	"SELECT user_id, COUNT(*) AS badge_count FROM badges GROUP BY user_id HAVING badge_count > 5;",
 	//2. Najczęściej przyznawane odznaki

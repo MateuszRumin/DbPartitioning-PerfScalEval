@@ -5,7 +5,7 @@ import (
 	"perfscaleval/queries"
 )
 
-func OneConAllTable() {
+func oneConAllTable() {
 
 	badge := generatefakedata.GenerateBadge()
 	comment := generatefakedata.GenerateComments()

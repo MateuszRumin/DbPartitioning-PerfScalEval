@@ -1,6 +1,6 @@
 package selectqueries
 
-var JoinAnalize = []string{
+var joinAnalize = []string{
 	// Przykład 1: Posty z komentarzami użytkownika
 	"SELECT p.post_title, c.comment_text FROM posts p INNER JOIN comments c ON p.id = c.post_id WHERE p.owner_user_id = 100;",
 	// Przykład 2: Posty z komentarzami i nazwą użytkownika

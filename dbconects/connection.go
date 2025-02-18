@@ -7,7 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func SetConnection() (*sql.DB, error) {
+func setConnection() (*sql.DB, error) {
 
 	user := "inz"
 	password := "dyplom"

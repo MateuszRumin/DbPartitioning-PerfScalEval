@@ -1,6 +1,6 @@
 package selectqueries
 
-var Performacne = []string{
+var performacneAnalize = []string{
 	// Pełne skany tabel
 	// Przykład 1: Pełny skan tabeli posts
 	"SELECT * FROM posts WHERE score > 0 LIMIT 10000;",

@@ -1,7 +1,7 @@
 package selectqueries
 
 //rankingi, średnie kroczące, kumulowane sumy i porównania
-var ExplainAnalize = []string{
+var optAnalize = []string{
 	//fulscans
 	//Tabela badges
 	"SELECT * FROM badges WHERE badge_name LIKE '%gold%';",
@@ -51,7 +51,7 @@ var ExplainAnalize = []string{
 	"SELECT * FROM votes WHERE vote_type_id = 2 LIMIT 10000;",
 }
 
-var IndexAnalize = []string{
+var indexAnalize = []string{
 	//Sprawdzenie wykorzystania indeksów (EXPLAIN)
 	//Tabela badges
 	"EXPLAIN SELECT * FROM badges WHERE user_id = 100;",

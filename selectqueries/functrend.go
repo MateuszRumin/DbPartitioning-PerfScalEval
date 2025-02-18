@@ -1,7 +1,7 @@
 package selectqueries
 
 //rankingi, średnie kroczące, kumulowane sumy i porównania
-var FunokieTrendAnalize = []string{
+var funWinTrendAnalize = []string{
 	//Przykład 1: Ranking użytkowników według liczby odznak
 	"SELECT u.display_name, COUNT(b.id) OVER (PARTITION BY b.user_id) AS badge_count, RANK() OVER (ORDER BY COUNT(b.id) DESC) AS rank FROM users u LEFT JOIN badges b ON u.id = b.user_id;",
 	//Przykład 2: Średnia krocząca liczby odznak na użytkownika w czasie

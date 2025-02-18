@@ -1,6 +1,6 @@
 package selectqueries
 
-var SubAndCteAnalize = []string{
+var subAndCteAnalize = []string{
 	//Przykład 1: Użytkownicy z więcej niż 5 odznakami
 	"SELECT u.display_name, COUNT(b.id) AS badge_count FROM users u INNER JOIN badges b ON u.id = b.user_id GROUP BY u.id HAVING badge_count > 5;",
 	//Przykład 2: Użytkownicy z odznakami w 2023 roku (CTE)

@@ -1,6 +1,6 @@
 package selectqueries
 
-var IdsecectPost = []string{
+var idselcectPost = []string{
 	"SELECT * FROM posts WHERE id = 100;",
 	"SELECT * FROM posts WHERE id = 3000;",
 	"SELECT * FROM posts WHERE id = 34525;",
@@ -16,7 +16,7 @@ var IdsecectPost = []string{
 	"SELECT * FROM posts WHERE id =45;",
 }
 
-var IdsecectPostLimit = []string{
+var idselcectPostLimit = []string{
 	"SELECT * FROM posts WHERE id = 100 limit 1;",
 	"SELECT * FROM posts WHERE id = 3000 limit 1;",
 	"SELECT * FROM posts WHERE id = 34525 limit 1;",
@@ -32,7 +32,7 @@ var IdsecectPostLimit = []string{
 	"SELECT * FROM posts WHERE id =45 limit 1;",
 }
 
-var PostTypesecectPost = []string{
+var postTypeselcectPost = []string{
 	"SELECT * FROM posts WHERE post_type_id = 15;",
 	"SELECT * FROM posts WHERE post_type_id = 3;",
 	"SELECT * FROM posts WHERE post_type_id = 8;",
@@ -41,7 +41,7 @@ var PostTypesecectPost = []string{
 	"SELECT * FROM posts WHERE post_type_id = 1;",
 }
 
-var PostTypesecectPostLimit = []string{
+var postTypeselcectPostLimit = []string{
 	"SELECT * FROM posts WHERE post_type_id = 15 limit 10;",
 	"SELECT * FROM posts WHERE post_type_id = 3 limit 10;",
 	"SELECT * FROM posts WHERE post_type_id = 8 limit 10;",
@@ -50,16 +50,16 @@ var PostTypesecectPostLimit = []string{
 	"SELECT * FROM posts WHERE post_type_id = 1 limit 10;",
 }
 
-var AccepdedansweridcectPost = []string{
+var accepdedansweridcectPost = []string{
 	"SELECT * FROM posts WHERE accepted_answer_id IS NOT NULL;",
 	"SELECT * FROM posts WHERE accepted_answer_id IS NULL;",
 }
-var AccepdedansweridcectPostLimit = []string{
+var accepdedansweridcectPostLimit = []string{
 	"SELECT * FROM posts WHERE accepted_answer_id IS NOT NULL limit 10;",
 	"SELECT * FROM posts WHERE accepted_answer_id IS NULL limit 10;",
 }
 
-var ParentIDselectPost = []string{
+var parentIDselectPost = []string{
 	"SELECT * FROM posts WHERE parent_id = 39 limit 2;",
 	"SELECT * FROM posts WHERE parent_id = 50 limit 2;",
 	"SELECT * FROM posts WHERE parent_id = 23425 limit 2;",
@@ -69,7 +69,7 @@ var ParentIDselectPost = []string{
 	"SELECT * FROM posts WHERE parent_id = 324234 limit 2;",
 }
 
-var CreationDateSelectPost = []string{
+var creationDateSelectPost = []string{
 	"SELECT * FROM posts WHERE creation_date = '2023-01-01';",
 	"SELECT * FROM posts WHERE creation_date = '2022-05-15';",
 	"SELECT * FROM posts WHERE creation_date = '2021-12-31';",
@@ -82,7 +82,7 @@ var CreationDateSelectPost = []string{
 	"SELECT * FROM posts WHERE creation_date = '2020-10-30';",
 }
 
-var ScoreSelectPost = []string{
+var scoreSelectPost = []string{
 	"SELECT * FROM posts WHERE score = 0;",
 	"SELECT * FROM posts WHERE score = 10;",
 	"SELECT * FROM posts WHERE score = 50;",
@@ -94,7 +94,7 @@ var ScoreSelectPost = []string{
 	"SELECT * FROM posts WHERE score = 2000;",
 	"SELECT * FROM posts WHERE score = 2500;",
 }
-var ViewCountSelectPost = []string{
+var viewCountSelectPost = []string{
 	"SELECT * FROM posts WHERE view_count = 100;",
 	"SELECT * FROM posts WHERE view_count = 500;",
 	"SELECT * FROM posts WHERE view_count = 1000;",
@@ -107,7 +107,7 @@ var ViewCountSelectPost = []string{
 	"SELECT * FROM posts WHERE view_count = 500000;",
 }
 
-var PostBodySelectPost = []string{
+var postBodySelectPost = []string{
 	"SELECT * FROM posts WHERE post_body LIKE '%error%';",
 	"SELECT * FROM posts WHERE post_body LIKE '%bug%';",
 	"SELECT * FROM posts WHERE post_body LIKE '%fix%';",
@@ -120,7 +120,7 @@ var PostBodySelectPost = []string{
 	"SELECT * FROM posts WHERE post_body LIKE '%issue%';",
 }
 
-var OwnerUserIDSelectPost = []string{
+var ownerUserIDSelectPost = []string{
 	"SELECT * FROM posts WHERE owner_user_id = 100;",
 	"SELECT * FROM posts WHERE owner_user_id = 500;",
 	"SELECT * FROM posts WHERE owner_user_id = 1000;",
@@ -133,7 +133,7 @@ var OwnerUserIDSelectPost = []string{
 	"SELECT * FROM posts WHERE owner_user_id = 4500;",
 }
 
-var LastEditorUserIDSelectPost = []string{
+var lastEditorUserIDSelectPost = []string{
 	"SELECT * FROM posts WHERE last_editor_user_id = 100;",
 	"SELECT * FROM posts WHERE last_editor_user_id = 500;",
 	"SELECT * FROM posts WHERE last_editor_user_id = 1000;",
@@ -146,7 +146,7 @@ var LastEditorUserIDSelectPost = []string{
 	"SELECT * FROM posts WHERE last_editor_user_id = 4500;",
 }
 
-var LastEditDateSelectPost = []string{
+var lastEditDateSelectPost = []string{
 	"SELECT * FROM posts WHERE last_edit_date = '2023-01-01';",
 	"SELECT * FROM posts WHERE last_edit_date = '2022-05-15';",
 	"SELECT * FROM posts WHERE last_edit_date = '2021-12-31';",
@@ -159,7 +159,7 @@ var LastEditDateSelectPost = []string{
 	"SELECT * FROM posts WHERE last_edit_date = '2020-10-30';",
 }
 
-var LastActivityDateSelectPost = []string{
+var lastActivityDateSelectPost = []string{
 	"SELECT * FROM posts WHERE last_activity_date = '2023-01-01';",
 	"SELECT * FROM posts WHERE last_activity_date = '2022-05-15';",
 	"SELECT * FROM posts WHERE last_activity_date = '2021-12-31';",
@@ -172,7 +172,7 @@ var LastActivityDateSelectPost = []string{
 	"SELECT * FROM posts WHERE last_activity_date = '2020-10-30';",
 }
 
-var PostTitleSelectPost = []string{
+var postTitleSelectPost = []string{
 	"SELECT * FROM posts WHERE post_title LIKE '%error%';",
 	"SELECT * FROM posts WHERE post_title LIKE '%bug%';",
 	"SELECT * FROM posts WHERE post_title LIKE '%fix%';",
@@ -185,7 +185,7 @@ var PostTitleSelectPost = []string{
 	"SELECT * FROM posts WHERE post_title LIKE '%issue%';",
 }
 
-var TagsSelectPost = []string{
+var tagsSelectPost = []string{
 	"SELECT * FROM posts WHERE tags LIKE '%java%';",
 	"SELECT * FROM posts WHERE tags LIKE '%python%';",
 	"SELECT * FROM posts WHERE tags LIKE '%javascript%';",
@@ -198,7 +198,7 @@ var TagsSelectPost = []string{
 	"SELECT * FROM posts WHERE tags LIKE '%nodejs%';",
 }
 
-var AnswerCountSelectPost = []string{
+var answerCountSelectPost = []string{
 	"SELECT * FROM posts WHERE answer_count = 0;",
 	"SELECT * FROM posts WHERE answer_count = 1;",
 	"SELECT * FROM posts WHERE answer_count = 5;",
@@ -211,7 +211,7 @@ var AnswerCountSelectPost = []string{
 	"SELECT * FROM posts WHERE answer_count = 1000;",
 }
 
-var CommentCountSelectPost = []string{
+var commentCountSelectPost = []string{
 	"SELECT * FROM posts WHERE comment_count = 0;",
 	"SELECT * FROM posts WHERE comment_count = 1;",
 	"SELECT * FROM posts WHERE comment_count = 5;",
@@ -224,7 +224,7 @@ var CommentCountSelectPost = []string{
 	"SELECT * FROM posts WHERE comment_count = 1000;",
 }
 
-var ContentLicenseSelectPost = []string{
+var contentLicenseSelectPost = []string{
 	"SELECT * FROM posts WHERE content_license = 'CC BY-SA 4.0';",
 	"SELECT * FROM posts WHERE content_license = 'MIT';",
 	"SELECT * FROM posts WHERE content_license = 'Apache 2.0';",
@@ -237,7 +237,7 @@ var ContentLicenseSelectPost = []string{
 	"SELECT * FROM posts WHERE content_license = 'LGPL';",
 }
 
-var MultiConditionSelectPost = []string{
+var multiConditionSelectPost = []string{
 	"SELECT * FROM posts WHERE post_type_id = 1 AND score > 100;",
 	"SELECT * FROM posts WHERE tags LIKE '%java%' AND answer_count > 5;",
 	"SELECT * FROM posts WHERE creation_date > '2023-01-01' AND view_count < 1000;",
@@ -245,7 +245,7 @@ var MultiConditionSelectPost = []string{
 	"SELECT * FROM posts WHERE post_body LIKE '%error%' AND score > 50;",
 }
 
-var GroupBySelectPost = []string{
+var groupBySelectPost = []string{
 	"SELECT post_type_id, COUNT(*) FROM posts GROUP BY post_type_id;",
 	"SELECT owner_user_id, COUNT(*) FROM posts GROUP BY owner_user_id;",
 	"SELECT tags, COUNT(*) FROM posts GROUP BY tags;",
@@ -253,7 +253,7 @@ var GroupBySelectPost = []string{
 	"SELECT YEAR(creation_date), COUNT(*) FROM posts GROUP BY YEAR(creation_date);",
 }
 
-var OrderBySelectPost = []string{
+var orderBySelectPost = []string{
 	"SELECT * FROM posts ORDER BY creation_date DESC LIMIT 20;",
 	"SELECT * FROM posts ORDER BY score DESC LIMIT 10;",
 	"SELECT * FROM posts ORDER BY view_count DESC LIMIT 15;",
@@ -261,7 +261,7 @@ var OrderBySelectPost = []string{
 	"SELECT * FROM posts ORDER BY answer_count DESC LIMIT 25;",
 }
 
-var BetweenSelectPost = []string{
+var betweenSelectPost = []string{
 	"SELECT * FROM posts WHERE creation_date BETWEEN '2022-01-01' AND '2022-12-31';",
 	"SELECT * FROM posts WHERE score BETWEEN 50 AND 100;",
 	"SELECT * FROM posts WHERE view_count BETWEEN 1000 AND 5000;",
@@ -269,7 +269,7 @@ var BetweenSelectPost = []string{
 	"SELECT * FROM posts WHERE answer_count BETWEEN 5 AND 20;",
 }
 
-var FullScanSelectPost = []string{
+var fullScanSelectPost = []string{
 	"SELECT * FROM posts LIMIT 100;",
 	"SELECT * FROM posts LIMIT 500;",
 	"SELECT * FROM posts LIMIT 1000;",
@@ -277,7 +277,7 @@ var FullScanSelectPost = []string{
 	"SELECT * FROM posts LIMIT 10000;",
 }
 
-var CountSelectPost = []string{
+var countSelectPost = []string{
 	"SELECT COUNT(*) FROM posts;",
 	"SELECT COUNT(*) FROM posts WHERE post_type_id = 1;",
 	"SELECT COUNT(*) FROM posts WHERE score > 100;",
@@ -285,7 +285,7 @@ var CountSelectPost = []string{
 	"SELECT COUNT(*) FROM posts WHERE creation_date > '2023-01-01';",
 }
 
-var AnalizeUserActivity = []string{
+var analizeUserActivity = []string{
 	"SELECT owner_user_id, COUNT(*) AS post_count FROM posts WHERE creation_date > '2023-01-01' GROUP BY owner_user_id HAVING post_count > 5;",
 	"SELECT owner_user_id, AVG(score) AS avg_score FROM posts GROUP BY owner_user_id ORDER BY avg_score DESC LIMIT 10;",
 	"SELECT owner_user_id, SUM(view_count) AS total_views FROM posts GROUP BY owner_user_id ORDER BY total_views DESC LIMIT 10;",
@@ -293,7 +293,7 @@ var AnalizeUserActivity = []string{
 	"SELECT owner_user_id, COUNT(*) AS post_count FROM posts WHERE post_type_id = 1 GROUP BY owner_user_id HAVING post_count > 10;",
 }
 
-var AnalizePostTags = []string{
+var analizePostTags = []string{
 	"SELECT tags, COUNT(*) AS post_count FROM posts WHERE creation_date > '2022-01-01' GROUP BY tags ORDER BY post_count DESC LIMIT 10;",
 	"SELECT tags, AVG(score) AS avg_score FROM posts GROUP BY tags HAVING COUNT(*) > 50 ORDER BY avg_score DESC LIMIT 10;",
 	"SELECT tags, SUM(answer_count) AS total_answers FROM posts GROUP BY tags ORDER BY total_answers DESC LIMIT 10;",
@@ -301,14 +301,14 @@ var AnalizePostTags = []string{
 	"SELECT tags, AVG(view_count) AS avg_views FROM posts GROUP BY tags HAVING COUNT(*) > 100 ORDER BY avg_views DESC LIMIT 10;",
 }
 
-var AnalizePostDate = []string{
+var analizePostDate = []string{
 	"SELECT YEAR(creation_date) AS year, COUNT(*) AS post_count FROM posts GROUP BY YEAR(creation_date) ORDER BY year DESC;",
 	"SELECT MONTH(creation_date) AS month, COUNT(*) AS post_count FROM posts WHERE YEAR(creation_date) = 2023 GROUP BY MONTH(creation_date) ORDER BY month;",
 	"SELECT DATE(creation_date) AS date, COUNT(*) AS post_count FROM posts GROUP BY DATE(creation_date) ORDER BY date DESC LIMIT 10;",
 	"SELECT YEAR(creation_date) AS year, AVG(score) AS avg_score FROM posts GROUP BY YEAR(creation_date) ORDER BY year DESC;",
 	"SELECT WEEK(creation_date) AS week, COUNT(*) AS post_count FROM posts WHERE YEAR(creation_date) = 2023 GROUP BY WEEK(creation_date) ORDER BY week;",
 }
-var ViewMarkAnalize = []string{
+var viewMarkAnalize = []string{
 	"SELECT score, COUNT(*) AS post_count FROM posts GROUP BY score ORDER BY score DESC LIMIT 10;",
 	"SELECT view_count, COUNT(*) AS post_count FROM posts GROUP BY view_count ORDER BY view_count DESC LIMIT 10;",
 	"SELECT score, AVG(view_count) AS avg_views FROM posts GROUP BY score ORDER BY score DESC LIMIT 10;",
@@ -316,14 +316,14 @@ var ViewMarkAnalize = []string{
 	"SELECT score, SUM(answer_count) AS total_answers FROM posts GROUP BY score ORDER BY score DESC LIMIT 10;",
 }
 
-var AnswersComsAnalize = []string{
+var answersComsAnalize = []string{
 	"SELECT answer_count, COUNT(*) AS post_count FROM posts GROUP BY answer_count ORDER BY answer_count DESC LIMIT 10;",
 	"SELECT comment_count, COUNT(*) AS post_count FROM posts GROUP BY comment_count ORDER BY comment_count DESC LIMIT 10;",
 	"SELECT answer_count, AVG(score) AS avg_score FROM posts GROUP BY answer_count ORDER BY answer_count DESC LIMIT 10;",
 	"SELECT comment_count, AVG(view_count) AS avg_views FROM posts GROUP BY comment_count ORDER BY comment_count DESC LIMIT 10;",
 	"SELECT answer_count, SUM(comment_count) AS total_comments FROM posts GROUP BY answer_count ORDER BY answer_count DESC LIMIT 10;",
 }
-var LiceneAnalize = []string{
+var liceneAnalize = []string{
 	"SELECT content_license, COUNT(*) AS post_count FROM posts GROUP BY content_license ORDER BY post_count DESC;",
 	"SELECT content_license, AVG(score) AS avg_score FROM posts GROUP BY content_license ORDER BY avg_score DESC;",
 	"SELECT content_license, SUM(view_count) AS total_views FROM posts GROUP BY content_license ORDER BY total_views DESC;",
@@ -331,7 +331,7 @@ var LiceneAnalize = []string{
 	"SELECT content_license, AVG(comment_count) AS avg_comments FROM posts GROUP BY content_license ORDER BY avg_comments DESC;",
 }
 
-var ConditionsAnalize = []string{
+var conditionsAnalize = []string{
 	"SELECT * FROM posts WHERE tags LIKE '%python%' AND post_type_id = 1 AND creation_date > '2023-01-01' ORDER BY score DESC LIMIT 20;",
 	"SELECT * FROM posts WHERE score > 100 AND view_count > 1000 AND answer_count > 5 ORDER BY creation_date DESC LIMIT 10;",
 	"SELECT * FROM posts WHERE post_body LIKE '%error%' AND tags LIKE '%java%' AND comment_count > 10 ORDER BY view_count DESC LIMIT 15;",
@@ -339,7 +339,7 @@ var ConditionsAnalize = []string{
 	"SELECT * FROM posts WHERE owner_user_id = 100 AND post_type_id = 1 AND creation_date > '2023-01-01' ORDER BY score DESC LIMIT 10;",
 }
 
-var AgregatePostAnalize = []string{
+var agregatePostAnalize = []string{
 	"SELECT post_type_id, COUNT(*) AS post_count, AVG(score) AS avg_score, SUM(view_count) AS total_views FROM posts GROUP BY post_type_id ORDER BY post_count DESC;",
 	"SELECT tags, COUNT(*) AS post_count, AVG(score) AS avg_score, SUM(answer_count) AS total_answers FROM posts GROUP BY tags ORDER BY post_count DESC LIMIT 10;",
 	"SELECT owner_user_id, COUNT(*) AS post_count, AVG(score) AS avg_score, MAX(view_count) AS max_views FROM posts GROUP BY owner_user_id ORDER BY post_count DESC LIMIT 10;",
@@ -347,7 +347,7 @@ var AgregatePostAnalize = []string{
 	"SELECT content_license, COUNT(*) AS post_count, AVG(score) AS avg_score, SUM(answer_count) AS total_answers FROM posts GROUP BY content_license ORDER BY post_count DESC;",
 }
 
-var SubQueryAnalize = []string{
+var subQueryAnalize = []string{
 	"SELECT * FROM posts WHERE score > (SELECT AVG(score) FROM posts);",
 	"SELECT * FROM posts WHERE view_count > (SELECT AVG(view_count) FROM posts WHERE post_type_id = 1);",
 	"SELECT * FROM posts WHERE answer_count > (SELECT AVG(answer_count) FROM posts WHERE tags LIKE '%java%');",

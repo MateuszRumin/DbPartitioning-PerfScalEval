@@ -6,10 +6,14 @@ import (
 )
 
 var (
-	NumConnections int
-	Logs           = false
-	Prometeus      = false
-	Action         = []string{"sdasdasd", "sdfsafsad"}
-	Connections    []*sql.DB
-	testTime       time.Duration
+	NumConnections   int  = 1
+	Logs             bool = false
+	Prometeus        bool = false
+	Action                = []string{"none", "Select", "Create", "Mix"}
+	Connections      []*sql.DB
+	TestTime         time.Duration
+	TestType         string = "none"
+	TestName         string = "none"
+	ConectionWorking bool   = false
+	Timeout          time.Duration
 )

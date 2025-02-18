@@ -1,6 +1,6 @@
 package selectqueries
 
-var AdvanceAnalize = []string{
+var advanceAnalize = []string{
 	//Rekurencyjne CTE i hierarchie
 	//1. Drzewo dyskusji (rekurencyjne CTE dla postów i komentarzy)
 	"WITH RECURSIVE PostTree AS ( SELECT id, parent_id, post_title, owner_user_id FROM posts WHERE parent_id IS NULL UNION ALL SELECT p.id, p.parent_id, p.post_title, p.owner_user_id FROM posts p INNER JOIN PostTree pt ON p.parent_id = pt.id)SELECT * FROM PostTree;",

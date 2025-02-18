@@ -1,6 +1,6 @@
 package selectqueries
 
-var UsertRaports = []string{
+var usertRaports = []string{
 	//1. Liczba postów na użytkownika
 	"SELECT u.display_name, COUNT(p.id) AS post_count FROM users u LEFT JOIN posts p ON u.id = p.owner_user_id GROUP BY u.id ORDER BY post_count DESC;",
 	//2. Aktywni użytkownicy w 2023 roku
@@ -23,7 +23,7 @@ var UsertRaports = []string{
 	"SELECT u.display_name, SUM(p.comment_count) AS total_comments FROM users u LEFT JOIN posts p ON u.id = p.owner_user_id GROUP BY u.id ORDER BY total_comments DESC LIMIT 10;",
 }
 
-var PostAnalize = []string{
+var postRaport = []string{
 	//1. Najpopularniejsze posty (wg wyświetleń)
 	"SELECT post_title, view_count FROM posts ORDER BY view_count DESC LIMIT 10;",
 	//2. Posty z największą liczbą głosów
@@ -46,7 +46,7 @@ var PostAnalize = []string{
 	"SELECT p.post_title, COUNT(c.id) AS comment_count FROM posts p LEFT JOIN comments c ON p.id = c.post_id WHERE YEAR(p.creation_date) = 2023 GROUP BY p.id ORDER BY comment_count DESC LIMIT 10;",
 }
 
-var CommentRaport = []string{
+var commentRaport = []string{
 	//1. Najczęściej komentowane posty
 	"SELECT p.post_title, COUNT(c.id) AS comment_count FROM posts p LEFT JOIN comments c ON p.id = c.post_id GROUP BY p.id ORDER BY comment_count DESC LIMIT 10;",
 	//2. Użytkownicy z największą liczbą komentarzy
@@ -59,7 +59,7 @@ var CommentRaport = []string{
 	"SELECT c.comment_text, LENGTH(c.comment_text) - LENGTH(REPLACE(c.comment_text, ' ', '')) + 1 AS word_count FROM comments c ORDER BY word_count DESC LIMIT 10;",
 }
 
-var BadgeRaport = []string{
+var badgeRaport = []string{
 	//1. Najczęściej przyznawane odznaki
 	"SELECT badge_name, COUNT(*) AS badge_count FROM badges GROUP BY badge_name ORDER BY badge_count DESC LIMIT 10;",
 	//2. Użytkownicy z największą liczbą odznak
@@ -72,7 +72,7 @@ var BadgeRaport = []string{
 	"SELECT b.badge_name, COUNT(*) AS badge_count FROM badges b LEFT JOIN users u ON b.user_id = u.id WHERE u.reputation > 1000 GROUP BY b.badge_name ORDER BY badge_count DESC LIMIT 10;",
 }
 
-var VoteRaport = []string{
+var voteRaport = []string{
 	//1. Posty z największą liczbą głosów
 	"SELECT p.post_title, COUNT(v.id) AS vote_count FROM posts p LEFT JOIN votes v ON p.id = v.post_id GROUP BY p.id ORDER BY vote_count DESC LIMIT 10;",
 	//2. Użytkownicy z największą liczbą głosów
@@ -85,7 +85,7 @@ var VoteRaport = []string{
 	"SELECT vote_type_id, COUNT(*) AS vote_count FROM votes GROUP BY vote_type_id ORDER BY vote_count DESC;",
 }
 
-var PostHistoryRaport = []string{
+var postHistoryRaport = []string{
 	//1. Liczba edycji na post
 	"SELECT p.post_title, COUNT(ph.id) AS edit_count FROM posts p LEFT JOIN post_history ph ON p.id = ph.post_id GROUP BY p.id ORDER BY edit_count DESC LIMIT 10;",
 	//2. Użytkownicy z największą liczbą edycji
