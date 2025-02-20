@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"perfscaleval/config"
-	"perfscaleval/dbconects"
 	"perfscaleval/selectqueries"
 	"sync"
 	"time"
@@ -16,85 +15,52 @@ type TestResult struct {
 	TestName      string        `json:"test_name"`       // Nazwa testu
 	ThreadNum     int           `json:"thread_num"`      // Numer wątku
 	QueryResults  []QueryResult `json:"query_results"`   // Wyniki zapytań
-	Timeout       time.Duration `json:"timeout"`         // Czas timeoutu
-	TotalTestTime time.Duration `json:"total_test_time"` // Całkowity czas testu
+	Timeout       float64       `json:"timeout"`         // Czas timeoutu w sekundach
+	TotalTestTime float64       `json:"total_test_time"` // Całkowity czas testu w sekundach
 }
 
 // Struktura do przechowywania wyników pojedynczego zapytania
 type QueryResult struct {
 	QueryID  int            `json:"query_id"` // ID zapytania
 	Query    string         `json:"query"`    // Treść zapytania
-	Duration float64        `json:"duration"` // Całkowity czas wykonania zapytania
+	Duration float64        `json:"duration"` // Całkowity czas wykonania zapytania w sekundach
 	Stages   []ProfileStage `json:"stages"`   // Etapy wykonania zapytania
 }
 
 // Struktura do przechowywania etapów profilowania
 type ProfileStage struct {
 	Status   string  `json:"status"`   // Status etapu
-	Duration float64 `json:"duration"` // Czas trwania etapu
+	Duration float64 `json:"duration"` // Czas trwania etapu w sekundach
 }
 
 // Struktura do przechowywania statystyk dla wątku
 type ThreadStats struct {
 	TestName             string             `json:"test_name"`              // Nazwa testu
 	ThreadNum            int                `json:"thread_num"`             // Numer wątku
-	TotalDuration        float64            `json:"total_duration"`         // Suma czasów wszystkich zapytań
-	TotalStatusDurations map[string]float64 `json:"total_status_durations"` // Suma czasów dla każdego statusu
-	AvgQueryDuration     float64            `json:"avg_query_duration"`     // Średni czas wykonania zapytania
-	AvgStatusDurations   map[string]float64 `json:"avg_status_durations"`   // Średni czas dla każdego statusu
-	TotalAppTime         time.Duration      `json:"total_app_time"`         // Całkowity czas w aplikacji dla wątku
-	AvgAppTimePerQuery   float64            `json:"avg_app_time_per_query"` // Średni czas w aplikacji na zapytanie
+	TotalDuration        float64            `json:"total_duration"`         // Suma czasów wszystkich zapytań w sekundach
+	TotalStatusDurations map[string]float64 `json:"total_status_durations"` // Suma czasów dla każdego statusu w sekundach
+	AvgQueryDuration     float64            `json:"avg_query_duration"`     // Średni czas wykonania zapytania w sekundach
+	AvgStatusDurations   map[string]float64 `json:"avg_status_durations"`   // Średni czas dla każdego statusu w sekundach
+	TotalAppTime         float64            `json:"total_app_time"`         // Całkowity czas w aplikacji dla wątku w sekundach
+	AvgAppTimePerQuery   float64            `json:"avg_app_time_per_query"` // Średni czas w aplikacji na zapytanie w sekundach
 }
 
-func selectAnalizeControl() {
-	if config.NumConnections <= 0 {
-		fmt.Println("Błąd flagi: nie można przeprowadzić testów bez połączenia z bazą danych")
-		return
-	}
+// Struktura do przechowywania statystyk ogólnych
+type OverallStats struct {
+	TestName             string             `json:"test_name"`              // Nazwa testu
+	TotalDuration        float64            `json:"total_duration"`         // Suma czasów wszystkich zapytań w sekundach
+	TotalStatusDurations map[string]float64 `json:"total_status_durations"` // Suma czasów dla każdego statusu w sekundach
+	AvgQueryDuration     float64            `json:"avg_query_duration"`     // Średni czas wykonania zapytania w sekundach
+	AvgStatusDurations   map[string]float64 `json:"avg_status_durations"`   // Średni czas dla każdego statusu w sekundach
+	TotalAppTime         float64            `json:"total_app_time"`         // Całkowity czas w aplikacji w sekundach
+	AvgAppTimePerQuery   float64            `json:"avg_app_time_per_query"` // Średni czas w aplikacji na zapytanie w sekundach
+	StartTimestamp       string             `json:"start_timestamp"`        // Timestamp rozpoczęcia testu
+	EndTimestamp         string             `json:"end_timestamp"`          // Timestamp zakończenia testu
+}
+
+func selectControl() {
 
 	startTime := time.Now() // Rozpocznij pomiar czasu całego testu
-
-	if config.NumConnections == 1 {
-		oneConnectionSelect()
-	} else {
-		multipleConnectionSelect(startTime)
-	}
-
-	totalTestTime := time.Since(startTime) // Oblicz całkowity czas testu
-	fmt.Printf("Całkowity czas testu: %v\n", totalTestTime)
-}
-
-func oneConnectionSelect() {
-	dbconects.SetConnections()
-	if !config.ConectionWorking {
-		fmt.Println("Brak połączenia")
-		return
-	}
-
-	val, ok := selectqueries.SelectQueriesStack[config.TestName]
-	if !ok || val == nil {
-		fmt.Println("Błąd flagi")
-		return
-	}
-
-	startTime := time.Now() // Rozpocznij pomiar czasu dla tego wątku
-
-	// Użyj pierwszego połączenia z config.connections
-	results := executeQueries(val, config.Connections[0], 0) // 0 to numer wątku
-
-	// Oblicz statystyki dla wątku
-	threadStats := calculateThreadStats(results, startTime, 0)
-
-	// Wyświetl statystyki w formacie JSON
-	printThreadStats(threadStats)
-}
-
-func multipleConnectionSelect(startTime time.Time) {
-	dbconects.SetConnections()
-	if !config.ConectionWorking {
-		fmt.Println("Brak połączenia")
-		return
-	}
 
 	val, ok := selectqueries.SelectQueriesStack[config.TestName]
 	if !ok || val == nil {
@@ -122,13 +88,18 @@ func multipleConnectionSelect(startTime time.Time) {
 	wg.Wait()
 
 	// Wyświetl statystyki z wszystkich wątków
-	for _, stats := range allStats {
-		printThreadStats(stats)
-	}
+	// for _, stats := range allStats {
+	// 	printThreadStats(stats)
+	// }
 
 	// Oblicz i wyświetl ogólne statystyki
-	overallStats := calculateOverallStats(allStats, startTime)
-	printThreadStats(overallStats)
+	endTime := time.Now()
+	overallStats := calculateOverallStats(allStats, startTime, endTime)
+	printOverallStats(overallStats)
+
+	totalTestTime := time.Since(startTime).Seconds() // Oblicz całkowity czas testu w sekundach
+	fmt.Printf("Całkowity czas testu: %.6f sekund\n", totalTestTime)
+
 }
 
 func executeQueries(queries *[]string, conn *sql.DB, threadNum int) []QueryResult {
@@ -221,21 +192,22 @@ func calculateThreadStats(results []QueryResult, startTime time.Time, threadNum 
 		stats.AvgStatusDurations[status] = total / float64(totalQueries)
 	}
 
-	// Całkowity czas w aplikacji dla wątku
-	stats.TotalAppTime = time.Since(startTime)
+	// Całkowity czas w aplikacji dla wątku w sekundach
+	stats.TotalAppTime = time.Since(startTime).Seconds()
 
-	// Średni czas w aplikacji na zapytanie
-	stats.AvgAppTimePerQuery = float64(stats.TotalAppTime) / float64(totalQueries)
+	// Średni czas w aplikacji na zapytanie w sekundach
+	stats.AvgAppTimePerQuery = stats.TotalAppTime / float64(totalQueries)
 
 	return stats
 }
 
-func calculateOverallStats(allStats []ThreadStats, startTime time.Time) ThreadStats {
-	overallStats := ThreadStats{
+func calculateOverallStats(allStats []ThreadStats, startTime, endTime time.Time) OverallStats {
+	overallStats := OverallStats{
 		TestName:             config.TestName,
-		ThreadNum:            -1, // -1 oznacza, że to ogólne statystyki
 		TotalStatusDurations: make(map[string]float64),
 		AvgStatusDurations:   make(map[string]float64),
+		StartTimestamp:       startTime.Format(time.RFC3339), // Timestamp rozpoczęcia testu
+		EndTimestamp:         endTime.Format(time.RFC3339),   // Timestamp zakończenia testu
 	}
 
 	totalThreads := len(allStats)
@@ -263,12 +235,12 @@ func calculateOverallStats(allStats []ThreadStats, startTime time.Time) ThreadSt
 	}
 
 	// Średni czas w aplikacji na zapytanie
-	overallStats.AvgAppTimePerQuery = float64(overallStats.TotalAppTime) / float64(totalThreads)
+	overallStats.AvgAppTimePerQuery = overallStats.TotalAppTime / float64(totalThreads)
 
 	return overallStats
 }
 
-func printThreadStats(stats ThreadStats) {
+func printOverallStats(stats OverallStats) {
 	// Konwertuj strukturę na JSON
 	jsonData, err := json.MarshalIndent(stats, "", "  ")
 	if err != nil {

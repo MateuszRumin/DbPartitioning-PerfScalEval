@@ -16,9 +16,9 @@ func main() {
 
 	// config.NumConnections = 1
 	// dbconects.SetConnections()
-	config.NumConnections = 10
+	// config.NumConnections = 5
 	// test.OneConAllTable()
-	config.TestType = "Select"
+	config.TestType = "Create"
 	config.TestName = "idselcectPostLimit"
 
 	test.TestControll()

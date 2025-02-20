@@ -2,6 +2,7 @@ module perfscaleval
 
 go 1.23.3
 
+
 require (
 	github.com/brianvoe/gofakeit/v7 v7.2.1
 	github.com/go-sql-driver/mysql v1.8.1
@@ -26,3 +27,4 @@ require (
 	golang.org/x/sys v0.22.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 )
+
