@@ -1,5 +1,5 @@
 package selectqueries
-
+.
 var idselcectPost = []string{
 	"SELECT * FROM posts WHERE id = 100;",
 	"SELECT * FROM posts WHERE id = 3000;",
