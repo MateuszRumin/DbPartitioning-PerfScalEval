@@ -348,7 +348,7 @@ var agregatePostAnalize = []string{
 }
 
 var subQueryAnalize = []string{
-	"SELECT * FROM posts WHERE score > (SELECT AVG(score) FROM posts);",
+	
 	"SELECT * FROM posts WHERE view_count > (SELECT AVG(view_count) FROM posts WHERE post_type_id = 1);",
 	"SELECT * FROM posts WHERE answer_count > (SELECT AVG(answer_count) FROM posts WHERE tags LIKE '%java%');",
 	"SELECT * FROM posts WHERE comment_count > (SELECT AVG(comment_count) FROM posts WHERE creation_date > '2023-01-01');",
