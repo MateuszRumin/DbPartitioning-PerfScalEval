@@ -1,5 +1,6 @@
 package selectqueries
-.
+
+//za szybko działa w obu przypadkach
 var idselcectPost = []string{
 	"SELECT * FROM posts WHERE id = 100;",
 	"SELECT * FROM posts WHERE id = 3000;",
@@ -16,6 +17,7 @@ var idselcectPost = []string{
 	"SELECT * FROM posts WHERE id =45;",
 }
 
+//za szybko działa w obu przypadkach
 var idselcectPostLimit = []string{
 	"SELECT * FROM posts WHERE id = 100 limit 1;",
 	"SELECT * FROM posts WHERE id = 3000 limit 1;",
@@ -41,6 +43,7 @@ var postTypeselcectPost = []string{
 	"SELECT * FROM posts WHERE post_type_id = 1;",
 }
 
+//przewaga zwykłych
 var postTypeselcectPostLimit = []string{
 	"SELECT * FROM posts WHERE post_type_id = 15 limit 10;",
 	"SELECT * FROM posts WHERE post_type_id = 3 limit 10;",
@@ -348,7 +351,7 @@ var agregatePostAnalize = []string{
 }
 
 var subQueryAnalize = []string{
-	
+
 	"SELECT * FROM posts WHERE view_count > (SELECT AVG(view_count) FROM posts WHERE post_type_id = 1);",
 	"SELECT * FROM posts WHERE answer_count > (SELECT AVG(answer_count) FROM posts WHERE tags LIKE '%java%');",
 	"SELECT * FROM posts WHERE comment_count > (SELECT AVG(comment_count) FROM posts WHERE creation_date > '2023-01-01');",
