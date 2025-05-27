@@ -8,7 +8,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 
-	"perfscaleval/connectionssettings"
+	"perfscaleval/confmodel"
 )
 
 // func CreateConnectionsContent() fyne.CanvasObject {
@@ -70,7 +70,7 @@ func createConnection1Layour() fyne.CanvasObject {
 	border1.StrokeWidth = 1
 
 	toggleSwitchConnection := widget.NewCheck("ON/OFF Połączenie 1", func(checked bool) {
-		connectionssettings.EnableConnection1 = checked
+		confmodel.Connection1.Enable = checked
 	})
 
 	checkContainer := container.NewCenter(toggleSwitchConnection)
@@ -122,7 +122,7 @@ func createConnection2Layour() fyne.CanvasObject {
 	border1.StrokeWidth = 1
 
 	toggleSwitchConnection := widget.NewCheck("ON/OFF Połączenie 2", func(checked bool) {
-		connectionssettings.EnableConnection1 = checked
+		confmodel.Connection2.Enable = checked
 	})
 
 	checkContainer := container.NewCenter(toggleSwitchConnection)

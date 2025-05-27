@@ -9,21 +9,22 @@ import (
 
 // Globalna zmienna do przechowywania referencji
 
-func CreateTopMenu(content *fyne.Container) fyne.CanvasObject {
+func LayOut() fyne.CanvasObject {
+	savePlan := widget.NewButton("Zapisz", func() {})
+	loadPlan := widget.NewButton("Wczytaj", func() {})
+
+	saveings := container.NewVBox(savePlan, loadPlan)
+
 	connectionsBtn := widget.NewButton("Połączenia", func() {
-		content.Objects = []fyne.CanvasObject{CreateConnectionsContent()}
-		content.Refresh()
+		SwitchView(CreateConnectionsContent())
 	})
 
 	testPlanBtn := widget.NewButton("Test Plan", func() {
-		content.Objects = []fyne.CanvasObject{CreateTestPlanContent()}
-		content.Refresh()
+		SwitchView(CreateTestPlanContent())
 	})
-
 	resultsBtn := widget.NewButton("Wyniki", func() {
-		content.Objects = []fyne.CanvasObject{CreateResultsContent()}
-		content.Refresh()
+		SwitchView(CreateResultsContent())
 	})
 
-	return container.NewGridWithColumns(3, connectionsBtn, testPlanBtn, resultsBtn)
+	return container.NewGridWithColumns(4, connectionsBtn, testPlanBtn, resultsBtn, saveings)
 }
