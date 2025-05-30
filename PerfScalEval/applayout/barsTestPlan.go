@@ -2,50 +2,12 @@ package applayout
 
 import (
 	"fmt"
+	"perfscaleval/confmodel"
 
 	"fyne.io/fyne/v2"
-
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
-
-	"perfscaleval/confmodel"
 )
-
-func TestPlanControll() fyne.CanvasObject {
-	// Zawartość dla sekcji Test Plan
-	testCases := []string{"Test 1", "Test 2", "Test 3"}
-	checkboxes := make([]fyne.CanvasObject, len(testCases))
-
-	for i, tc := range testCases {
-		checkboxes[i] = widget.NewCheck(tc, nil)
-	}
-
-	startTestBtn := widget.NewButton("Rozpocznij test", nil)
-	progress := widget.NewProgressBar()
-
-	container := container.NewVBox(
-		container.NewVBox(checkboxes...),
-		layout.NewSpacer(),
-		progress,
-		startTestBtn,
-	)
-
-	return container
-
-}
-
-func checkExistance() fyne.CanvasObject {
-
-	if !confmodel.ProjectExist {
-		return TestPlanCreate()
-	} else if confmodel.ProjectExist {
-		return TestPlanEdit()
-	} else {
-		return container.NewVBox(nil, nil, nil, nil)
-	}
-
-}
 
 func PlanBar() fyne.CanvasObject {
 	// Kontener na przyciski planów
@@ -67,7 +29,8 @@ func PlanBar() fyne.CanvasObject {
 		btn := widget.NewButton(plan.PlanName, func() {
 			// Tutaj obsługa kliknięcia w plan
 			fmt.Println("Wybrano plan:", plan.PlanName)
-			confmodel.ProjectExist = true
+			confmodel.ChooseLayOut = 0
+			confmodel.CreateMode = false
 			confmodel.CurrentPlan = &plan
 			SwitchView(CreateTestPlanContent())
 		})
@@ -78,7 +41,8 @@ func PlanBar() fyne.CanvasObject {
 	addBtn := widget.NewButton("+ Dodaj nowy Plan", func() {
 		// Tutaj obsługa tworzenia nowego planu
 		fmt.Println("Dodawanie nowego planu")
-		confmodel.ProjectExist = false
+		confmodel.CreateMode = true
+		confmodel.ChooseLayOut = 0
 		SwitchView(CreateTestPlanContent())
 
 	})
@@ -104,23 +68,21 @@ func GroupBar() fyne.CanvasObject {
 			addBtn := widget.NewButton("+ Dodaj nową Grupę", func() {
 				// Tutaj obsługa tworzenia nowego planu
 				fmt.Println("Dodawanie nowej grupy")
-				confmodel.ProjectExist = false
+				confmodel.CreateMode = true
+				confmodel.ChooseLayOut = 1
 				SwitchView(CreateTestPlanContent())
 
 			})
-			return container.NewHBox(
-				addBtn,
-				widget.NewLabel("Brak planów"),
-			)
+			return container.NewHBox(addBtn)
 		}
 
 		// Dodaj przyciski dla każdego planu
 		for _, group := range groups {
 			group := group // ważne dla zamknięcia funkcji
 			btn := widget.NewButton(group.Name, func() {
-				// Tutaj obsługa kliknięcia w plan
-				fmt.Println("Wybrano plan:", group.Name)
 				confmodel.CurrentGroup = &group
+				confmodel.CreateMode = false
+				confmodel.ChooseLayOut = 1
 				SwitchView(CreateTestPlanContent())
 			})
 			groupButtons.Add(btn)
@@ -130,7 +92,8 @@ func GroupBar() fyne.CanvasObject {
 		addBtn := widget.NewButton("+ Dodaj nową Grupę", func() {
 			// Tutaj obsługa tworzenia nowego planu
 			fmt.Println("Dodawanie nowej grupy")
-			confmodel.ProjectExist = false
+			confmodel.CreateMode = true
+			confmodel.ChooseLayOut = 1
 			SwitchView(CreateTestPlanContent())
 
 		})
@@ -214,16 +177,4 @@ func StepsBar() fyne.CanvasObject {
 
 	// Kontener końcowy - przyciski planów + przycisk dodawania
 
-}
-
-func CreateTestPlanContent() fyne.CanvasObject {
-	side := StepsBar()
-
-	changer := checkExistance()
-
-	MainContent := container.NewBorder(GroupBar(), nil, side, nil, changer)
-
-	PlanContent := container.NewVBox(PlanBar(), MainContent)
-
-	return PlanContent
 }

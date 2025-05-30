@@ -32,7 +32,7 @@ func TestPlanCreate() fyne.CanvasObject {
 			Comments: commentEntry.Text,
 			Group:    []confmodel.TestGroup{}, // Początkowo pusta lista grup
 		}
-		confmodel.ProjectExist = true
+		confmodel.CreateMode = false
 
 		// Dodajemy do globalnej zmiennej Plan
 		confmodel.Plan = append(confmodel.Plan, newPlan)
@@ -95,7 +95,8 @@ func TestPlanEdit() fyne.CanvasObject {
 			confmodel.CurrentPlan = nil
 			confmodel.CurrentGroup = nil
 			confmodel.CurrentStep = nil
-			confmodel.ProjectExist = false
+			confmodel.ChooseLayOut = 0
+			confmodel.CreateMode = true
 		}
 		SwitchView(CreateTestPlanContent())
 	})

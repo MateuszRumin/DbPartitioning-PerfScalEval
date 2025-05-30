@@ -7,7 +7,6 @@ type TestPlan struct {
 }
 
 type TestGroup struct {
-	IDGroup      int        `json:"id_group"`
 	Name         string     `json:"name"`
 	Comments     string     `json:"comments"`
 	Action       string     `json:"action"`
@@ -29,9 +28,10 @@ type TestStep struct {
 	SaveResult bool   `json:"save_result"`
 }
 
-var ProjectExist bool = false
+var CreateMode bool = true
+var GroupExist bool = false
+var ChooseLayOut int = 0
 var CurrentPlan *TestPlan
 var CurrentGroup *TestGroup
 var CurrentStep *TestStep
-var MainPlanContentControl int = 0
 var Plan []TestPlan
