@@ -10,10 +10,11 @@ import (
 )
 
 func stepControler() fyne.CanvasObject {
-	if confmodel.CurrentStep == nil && confmodel.CurrentGroup != nil {
-		return widget.NewLabel("Dodaj krok")
+	if confmodel.CreateMode {
+		return StepCreate()
 	}
-	return widget.NewLabel("Edytuj krok")
+
+	return stepEdit()
 
 }
 func groupControler() fyne.CanvasObject {
@@ -52,7 +53,8 @@ func CreateTestPlanContent() fyne.CanvasObject {
 
 	changer := planViewMode()
 
-	MainContent := container.NewBorder(GroupBar(), nil, side, nil, changer)
+	MainContent := container.NewBorder(GroupBar(), nil, side, nil, container.NewStack(changer))
+	MainContent.Resize(fyne.NewSize(MainContent.MinSize().Width, 2000))
 
 	PlanContent := container.NewVBox(PlanBar(), MainContent)
 

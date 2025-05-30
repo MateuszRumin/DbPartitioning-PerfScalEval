@@ -21,11 +21,8 @@ type TestGroup struct {
 }
 
 type TestStep struct {
-	Order      int    `json:"order"`
-	Name       string `json:"name"`
-	QueryType  string `json:"query_type"`
-	Query      string `json:"query"`
-	SaveResult bool   `json:"save_result"`
+	Name  string `json:"name"`
+	Query string `json:"query"`
 }
 
 var CreateMode bool = true

@@ -117,7 +117,7 @@ func GroupBar() fyne.CanvasObject {
 
 func StepsBar() fyne.CanvasObject {
 	// Kontener na przyciski planów
-	stepButtons := container.NewHBox()
+	stepButtons := container.NewVBox()
 	if confmodel.CurrentPlan != nil {
 		if confmodel.CurrentGroup != nil {
 			// Pobierz listę planów z confmodel
@@ -128,10 +128,12 @@ func StepsBar() fyne.CanvasObject {
 				addBtn := widget.NewButton("+ Dodaj nowy Krok", func() {
 					// Tutaj obsługa tworzenia nowego planu
 					fmt.Println("Dodawanie nowego kroku")
+					confmodel.CreateMode = true
+					confmodel.ChooseLayOut = 2
 					SwitchView(CreateTestPlanContent())
 
 				})
-				return container.NewHBox(
+				return container.NewVBox(
 					addBtn,
 					widget.NewLabel("Brak planów"),
 				)
@@ -143,6 +145,8 @@ func StepsBar() fyne.CanvasObject {
 				btn := widget.NewButton(step.Name, func() {
 					// Tutaj obsługa kliknięcia w plan
 					fmt.Println("Wybrano krok:", step.Name)
+					confmodel.CreateMode = false
+					confmodel.ChooseLayOut = 2
 					confmodel.CurrentStep = &step
 					SwitchView(CreateTestPlanContent())
 				})
@@ -153,6 +157,8 @@ func StepsBar() fyne.CanvasObject {
 			addBtn := widget.NewButton("+ Dodaj nowy Krok", func() {
 				// Tutaj obsługa tworzenia nowego planu
 				fmt.Println("Dodawanie nowego kroku")
+				confmodel.CreateMode = true
+				confmodel.ChooseLayOut = 2
 				SwitchView(CreateTestPlanContent())
 
 			})

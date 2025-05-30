@@ -1,61 +1,83 @@
 package applayout
 
 import (
+	"fmt"
+	"perfscaleval/confmodel"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 )
 
 func StepCreate() fyne.CanvasObject {
-	checkRamUp := widget.NewCheck("RampUp", func(checked bool) {
-		if checked {
-			println("Checkbox is checked")
-		} else {
-			println("Checkbox is unchecked")
+
+	nameEntry := widget.NewEntry()
+	nameContainer := container.NewVBox(widget.NewLabel("Nazwa"), nameEntry)
+
+	queryEntry := widget.NewEntry()
+	queryContainer := container.NewVBox(widget.NewLabel("Zapytanie"), queryEntry)
+
+	saveBtn := widget.NewButton("Dodaj plan", func() {
+		if nameEntry.Text == "" || queryEntry.Text == "" {
+			dialog.ShowInformation("Błąd", "Nazwa planu nie może być pusta!", fyne.CurrentApp().Driver().AllWindows()[0])
+			return
 		}
-	})
 
-	checkSameUserIter := widget.NewCheck("Same User Iter", func(checked bool) {
-		if checked {
-			println("Checkbox is checked")
-		} else {
-			println("Checkbox is unchecked")
+		newStep := confmodel.TestStep{
+			Name:  nameEntry.Text,
+			Query: queryEntry.Text,
 		}
+
+		confmodel.CurrentGroup.Steps = append(confmodel.CurrentGroup.Steps, newStep)
+		confmodel.CurrentStep = &confmodel.CurrentGroup.Steps[len(confmodel.Plan)-1]
+		confmodel.ChooseLayOut = 2
+		confmodel.CreateMode = false
+
+		// Logowanie dla debugowania (można usunąć w produkcji)
+		fmt.Println("Zmodtfikowano plan")
+		fmt.Printf("Aktualne plany: %+v\n", confmodel.Plan)
+		SwitchView(CreateTestPlanContent())
 	})
-	infiniteIter := widget.NewCheck("Infinite Loop", func(checked bool) {
-		if checked {
-			println("Checkbox is checked")
-		} else {
-			println("Checkbox is unchecked")
+
+	mainContainer := container.NewVBox(nameContainer, queryContainer, saveBtn)
+
+	return mainContainer
+
+}
+
+func stepEdit() fyne.CanvasObject {
+
+	nameEntry := widget.NewEntry()
+	nameContainer := container.NewVBox(widget.NewLabel("Nazwa"), nameEntry)
+
+	queryEntry := widget.NewEntry()
+	queryContainer := container.NewVBox(widget.NewLabel("Zapytanie"), queryEntry)
+
+	saveBtn := widget.NewButton("Edytuj plan", func() {
+		if nameEntry.Text == "" || queryEntry.Text == "" {
+			dialog.ShowInformation("Błąd", "Nazwa planu nie może być pusta!", fyne.CurrentApp().Driver().AllWindows()[0])
+			return
 		}
+
+		newStep := confmodel.TestStep{
+			Name:  nameEntry.Text,
+			Query: queryEntry.Text,
+		}
+
+		confmodel.CurrentGroup.Steps = append(confmodel.CurrentGroup.Steps, newStep)
+		confmodel.CurrentStep = &confmodel.CurrentGroup.Steps[len(confmodel.Plan)-1]
+		confmodel.ChooseLayOut = 2
+		confmodel.CreateMode = false
+
+		// Logowanie dla debugowania (można usunąć w produkcji)
+		fmt.Println("Zmodtfikowano plan")
+		fmt.Printf("Aktualne plany: %+v\n", confmodel.Plan)
+		SwitchView(CreateTestPlanContent())
 	})
 
-	checksContainer := container.NewHBox(checkRamUp, checkSameUserIter, infiniteIter)
+	mainContainer := container.NewVBox(nameContainer, queryContainer, saveBtn)
 
-	// Pole wprowadzania dla nazwy
-	nameGroupEntry := widget.NewEntry()
-	nameContainer := container.NewVBox(widget.NewLabel("Nazwa"), nameGroupEntry)
-	commentsGroupEntry := widget.NewEntry()
-	commentsContainer := container.NewVBox(widget.NewLabel("Komentarz"), commentsGroupEntry)
-	actionGroupEntry := widget.NewEntry()
-	actionContainer := container.NewVBox(widget.NewLabel("Akcja"), actionGroupEntry)
-	entryContainer := container.NewVBox(nameContainer, commentsContainer, actionContainer)
+	return mainContainer
 
-	// Duration Container Lopps etc.
-	itersGroupEntry := widget.NewEntry()
-	iterContainer := container.NewVBox(widget.NewLabel("Liczba iteracji"), itersGroupEntry)
-	lifeTimeEntry := widget.NewEntry()
-	lifeTimeContainer := container.NewVBox(widget.NewLabel("Czas działania"), lifeTimeEntry)
-	durationEntry := widget.NewEntry()
-	durationContainer := container.NewVBox(widget.NewLabel("Duration"), durationEntry)
-
-	iterMainContainer := container.NewVBox(iterContainer, lifeTimeContainer, durationContainer)
-
-	saveBtn := widget.NewButton("Dodaj Grupę", func() {
-
-	})
-
-	GroupCreateContainer := container.NewVBox(checksContainer, entryContainer, iterMainContainer, saveBtn)
-
-	return GroupCreateContainer
 }
