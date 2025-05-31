@@ -48,10 +48,13 @@ func PlanBar() fyne.CanvasObject {
 	})
 
 	// Kontener końcowy - przyciski planów + przycisk dodawania
-	return container.NewHScroll( // Dodaj scroll jeśli przycisków jest za dużo
-		container.NewHBox(
-			planButtons,
-			addBtn,
+	return container.NewBorder(
+		nil, nil,
+		nil, addBtn,
+		container.NewHScroll( // Dodaj scroll jeśli przycisków jest za dużo
+			container.NewHBox(
+				planButtons,
+			),
 		),
 	)
 }
@@ -73,7 +76,7 @@ func GroupBar() fyne.CanvasObject {
 				SwitchView(CreateTestPlanContent())
 
 			})
-			return container.NewHBox(addBtn)
+			return container.NewBorder(nil, nil, nil, addBtn, nil)
 		}
 
 		// Dodaj przyciski dla każdego planu
@@ -98,12 +101,13 @@ func GroupBar() fyne.CanvasObject {
 
 		})
 
-		bar := container.NewHScroll(
-			container.NewHBox(
-				groupButtons,
-				addBtn,
-			),
-		)
+		bar := container.NewBorder(nil, nil, nil, addBtn,
+			container.NewHScroll(
+				container.NewHBox(
+					groupButtons,
+				),
+			))
+
 		return bar
 	}
 
@@ -133,9 +137,12 @@ func StepsBar() fyne.CanvasObject {
 					SwitchView(CreateTestPlanContent())
 
 				})
-				return container.NewVBox(
+				return container.NewBorder(
+					widget.NewLabel("Brak krokó"),
 					addBtn,
-					widget.NewLabel("Brak planów"),
+					nil,
+					nil,
+					nil,
 				)
 			}
 
@@ -163,10 +170,15 @@ func StepsBar() fyne.CanvasObject {
 
 			})
 
-			bar := container.NewVScroll(
-				container.NewVBox(
-					stepButtons,
-					addBtn,
+			bar := container.NewBorder(
+				widget.NewLabel("Kroki"),
+				addBtn,
+				nil,
+				nil,
+				container.NewVScroll(
+					container.NewVBox(
+						stepButtons,
+					),
 				),
 			)
 			return bar

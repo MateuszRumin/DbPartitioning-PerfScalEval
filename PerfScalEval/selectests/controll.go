@@ -1,0 +1,5 @@
+package selectests
+
+func RunTest() {
+
+}

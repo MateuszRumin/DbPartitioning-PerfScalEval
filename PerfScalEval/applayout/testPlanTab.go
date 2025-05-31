@@ -53,10 +53,9 @@ func CreateTestPlanContent() fyne.CanvasObject {
 
 	changer := planViewMode()
 
-	MainContent := container.NewBorder(GroupBar(), nil, side, nil, container.NewStack(changer))
-	MainContent.Resize(fyne.NewSize(MainContent.MinSize().Width, 2000))
+	upbarr := container.NewVBox(PlanBar(), GroupBar())
 
-	PlanContent := container.NewVBox(PlanBar(), MainContent)
+	MainContent := container.NewBorder(upbarr, nil, side, nil, changer)
 
-	return PlanContent
+	return MainContent
 }
