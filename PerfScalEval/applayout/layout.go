@@ -24,19 +24,17 @@ func load() {
 			return
 		}
 		if read == nil {
-			// User cancelled
+
 			return
 		}
 		defer read.Close()
 
-		// Read the file content
 		jsonData, err := io.ReadAll(read)
 		if err != nil {
 			fmt.Println("Error reading file:", err)
 			return
 		}
 
-		// Define the config structure to unmarshal into
 		type Config struct {
 			Connections struct {
 				Connection1 confmodel.ConnectionSetting `json:"connection1"`
@@ -52,13 +50,11 @@ func load() {
 
 		var config Config
 
-		// Unmarshal the JSON
 		if err := json.Unmarshal(jsonData, &config); err != nil {
 			fmt.Println("Error unmarshaling JSON:", err)
 			return
 		}
 
-		// Update the global variables
 		confmodel.Connection1 = config.Connections.Connection1
 		confmodel.Connection2 = config.Connections.Connection2
 		confmodel.Plan = config.TestPlans
@@ -66,16 +62,14 @@ func load() {
 		confmodel.GroupExist = config.CurrentState.GroupExist
 		confmodel.ChooseLayOut = config.CurrentState.ChooseLayOut
 
-		// If there are test plans, set the first one as current
 		if len(confmodel.Plan) > 0 {
 			confmodel.CurrentPlan = &confmodel.Plan[0]
 		}
 
-		// Show success message
 		dialog.ShowInformation("Sukces", "Plan testowy został wczytany", fyne.CurrentApp().Driver().AllWindows()[0])
 
-		// Here you might want to add code to refresh your UI to reflect the loaded data
-		// refreshUI() or similar function if you have one
+		fmt.Println(confmodel.Plan)
+		fmt.Println(confmodel.CurrentStep)
 
 	}, fyne.CurrentApp().Driver().AllWindows()[0])
 

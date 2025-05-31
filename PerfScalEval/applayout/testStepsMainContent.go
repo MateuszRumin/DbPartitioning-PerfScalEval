@@ -47,11 +47,13 @@ func StepCreate() fyne.CanvasObject {
 }
 
 func stepEdit() fyne.CanvasObject {
-
+	confmodel.CurrentStep = &confmodel.CurrentGroup.Steps[0]
 	nameEntry := widget.NewEntry()
+	nameEntry.SetText(confmodel.CurrentStep.Name)
 	nameContainer := container.NewVBox(widget.NewLabel("Nazwa"), nameEntry)
 
 	queryEntry := widget.NewEntry()
+	queryEntry.SetText(confmodel.CurrentStep.Query)
 	queryContainer := container.NewVBox(widget.NewLabel("Zapytanie"), queryEntry)
 
 	saveBtn := widget.NewButton("Edytuj plan", func() {

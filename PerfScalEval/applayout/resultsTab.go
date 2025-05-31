@@ -5,7 +5,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 
-	"perfscaleval/selectests"
+	"perfscaleval/tests"
 )
 
 func CreateResultsContent() fyne.CanvasObject {
@@ -14,7 +14,7 @@ func CreateResultsContent() fyne.CanvasObject {
 	groupBar := GroupBarResults()
 
 	btn_start := widget.NewButton("Start", func() {
-		selectests.RunTest()
+		tests.CheckEnabledConnection()
 	})
 
 	containerUp := container.NewVBox(planBar, groupBar)

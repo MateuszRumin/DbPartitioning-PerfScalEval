@@ -4,6 +4,7 @@ go 1.23.3
 
 require (
 	fyne.io/fyne/v2 v2.6.1
+	github.com/brianvoe/gofakeit/v7 v7.2.1
 	github.com/go-sql-driver/mysql v1.9.2
 )
 
