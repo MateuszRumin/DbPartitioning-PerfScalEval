@@ -1,0 +1,8 @@
+SQL scripts open:
+source Path
+
+Automatic id generation triger for tables without Primary Key on Database based on StackOverflow Data dump:
+source ../StackOverflow_AutoIdTrigger_forNoPrimaryKeyTables.sql
+
+Create Database And Migrate Model for logging Windows Resource Uasge:
+source ../ResourcesUsageDbWindows_DbAndModelMigratioin.sql
