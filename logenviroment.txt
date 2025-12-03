@@ -11,3 +11,42 @@ scrape_configs:
 - job_name: node
   static_configs:
   - targets: ['localhost:9100']
+
+
+Mysqld_exporter:
+https://prometheus.io/download/
+tar xvfz mysqld_exporter-0.18.0.linux-amd64.tar.gz
+
+CREATE USER 'exporter'@'localhost' IDENTIFIED BY 'XXXXXXXX' WITH MAX_USER_CONNECTIONS 3;
+GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'exporter'@'localhost';
+- job_name: mysql # To get metrics about the mysql exporter’s targets
+      metrics_path: /probe
+      params:
+        # Not required. Will match value to child in config file. Default value is `client`.
+        auth_module: [client.servers]
+      static_configs:
+        - targets:
+          # All mysql hostnames or unix sockets to monitor.
+          - server1:3306
+          - server2:3306
+          - unix:///run/mysqld/mysqld.sock
+      relabel_configs:
+        - source_labels: [__address__]
+          target_label: __param_target
+        - source_labels: [__param_target]
+          target_label: instance
+        - target_label: __address__
+          # The mysqld_exporter host:port
+          replacement: localhost:9104
+
+cd mysqld_exporter-0.18.0.linux-amd64
+
+./mysqld_exporter
+
+
+grafana:
+sudo apt-get install -y adduser libfontconfig1 musl
+wget https://dl.grafana.com/grafana-enterprise/release/12.3.0/grafana-enterprise_12.3.0_19497075765_linux_amd64.deb
+sudo dpkg -i grafana-enterprise_12.3.0_19497075765_linux_amd64.deb
+startt
+sudo /bin/systemctl start grafana-server
