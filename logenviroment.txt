@@ -1,3 +1,13 @@
+Lokalizacje:
+Mysql
+/usr/local/mysql
+Mysql exporter
+/home/inz/mysqld_exporter-0.18.0
+Node exporter
+/home/inz/node_exporter-1.10.2
+Prometeus
+/home/inz/prometheus-3.8.0
+
 Node exporter:
 wget https://github.com/prometheus/node_exporter/releases/download/v1.10.2/node_exporter-1.10.2.linux-amd64.tar.gz
 tar xvfz node_exporter-1.10.2.linux-amd64.tar.gz
@@ -50,3 +60,4 @@ wget https://dl.grafana.com/grafana-enterprise/release/12.3.0/grafana-enterprise
 sudo dpkg -i grafana-enterprise_12.3.0_19497075765_linux_amd64.deb
 startt
 sudo /bin/systemctl start grafana-server
+
