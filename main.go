@@ -8,6 +8,8 @@ import (
 )
 
 func main() {
+	prometheusGoAppMetrics()
+
 	aplication := app.New()
 	window := aplication.NewWindow("Update Time")
 	window.Resize(fyne.NewSize(1024, 500))

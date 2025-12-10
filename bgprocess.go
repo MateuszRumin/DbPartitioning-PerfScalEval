@@ -3,8 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"sync"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
@@ -26,7 +29,7 @@ func startBackgroundScraper() {
 	ctx, scraperCancel = context.WithCancel(context.Background())
 
 	go func() {
-		ticker := time.NewTicker(1 * time.Second)
+		ticker := time.NewTicker(3 * time.Second)
 		defer ticker.Stop()
 
 		for {
@@ -51,4 +54,13 @@ func stopBackgroundScraper() {
 
 	scraperCancel()
 	scraperRunning = false
+}
+
+func prometheusGoAppMetrics() {
+	go func() {
+		http.Handle("/metrics", promhttp.Handler())
+		http.ListenAndServe(":2112", nil)
+
+	}()
+
 }

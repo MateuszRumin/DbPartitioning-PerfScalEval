@@ -60,4 +60,13 @@ wget https://dl.grafana.com/grafana-enterprise/release/12.3.0/grafana-enterprise
 sudo dpkg -i grafana-enterprise_12.3.0_19497075765_linux_amd64.deb
 startt
 sudo /bin/systemctl start grafana-server
+Komenda mysql
+sudo -u mysql bin/mysqld
 
+
+Influxdb:
+
+https://docs.influxdata.com/influxdb3/core/
+
+curl -O https://www.influxdata.com/d/install_influxdb3.sh \
+&& sh install_influxdb3.sh 

@@ -2,54 +2,43 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
+	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
 )
 
-func fetchMetrics() (map[string]float64, error) {
-	resp, err := http.Get("http://localhost:9104/metrics")
+func fatal(err error) {
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
+
+func parseMetrics(url string) (map[string]*dto.MetricFamily, error) {
+	reader, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 
-	parser := expfmt.TextParser{}
-	families, err := parser.TextToMetricFamilies(resp.Body)
+	var parser expfmt.TextParser
+
+	mf, err := parser.TextToMetricFamilies(reader.Body)
 	if err != nil {
 		return nil, err
 	}
+	return mf, nil
 
-	result := make(map[string]float64)
-
-	for name, mf := range families {
-		for _, m := range mf.GetMetric() {
-			if m.Gauge != nil {
-				result[name] = m.Gauge.GetValue()
-			}
-			if m.Counter != nil {
-				result[name] = m.Counter.GetValue()
-			}
-		}
-	}
-
-	return result, nil
 }
 
 func fetchData() {
-	metrics, err := fetchMetrics()
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
+	url := "http://localhost:9090/metrics"
+	mf, err := parseMetrics(url)
+	fatal(err)
+
+	for _, v := range mf {
+		// fmt.Println("KEY: ", k)
+		fmt.Println("VAL: ", v)
 	}
 
-	// wybierasz interesujące metryki
-	threads := metrics["mysql_global_status_threads_running"]
-	queries := metrics["mysql_global_status_queries"]
-	uptime := metrics["mysql_global_status_uptime"]
-
-	// print
-	fmt.Println("threads_running:", threads)
-	fmt.Println("queries:", queries)
-	fmt.Println("uptime:", uptime)
 }
