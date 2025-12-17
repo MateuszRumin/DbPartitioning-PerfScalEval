@@ -1,8 +1,8 @@
-USE stackexchenege;
+USE testdb;
 
 
 LOAD XML
-INFILE 'C:/datafill/Tags.xml'
+INFILE '/var/lib/mysqlfiles/Tags.xml'
 INTO TABLE tags (
 	@Id, @TagName, @Count, @ExcerptPostId, @WikiPostId
 )

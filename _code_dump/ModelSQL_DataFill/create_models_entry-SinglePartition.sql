@@ -1,8 +1,8 @@
 Drop Database if EXISTS stackexchenege;
 
-CREATE DATABASE stackexchenege;
+CREATE DATABASE testdb;
 
-USE stackexchenege;
+USE testdb;
 
 DROP TABLE IF EXISTS badges;
 DROP TABLE IF EXISTS comments;
@@ -104,19 +104,19 @@ CREATE TABLE votes (
 );
 
 
--- ALTER TABLE badges ADD PRIMARY KEY (id);
--- ALTER TABLE comments ADD PRIMARY KEY (id);
--- ALTER TABLE post_history ADD PRIMARY KEY (id);
--- ALTER TABLE post_links ADD PRIMARY KEY (id);
--- ALTER TABLE posts ADD PRIMARY KEY (id);
--- ALTER TABLE votes ADD PRIMARY KEY (id);
--- ALTER TABLE users ADD PRIMARY KEY (id);
--- ALTER TABLE tags ADD PRIMARY KEY (id);
+ALTER TABLE badges ADD PRIMARY KEY (id);
+ALTER TABLE comments ADD PRIMARY KEY (id);
+ALTER TABLE post_history ADD PRIMARY KEY (id);
+ALTER TABLE post_links ADD PRIMARY KEY (id);
+ALTER TABLE posts ADD PRIMARY KEY (id);
+ALTER TABLE votes ADD PRIMARY KEY (id);
+ALTER TABLE users ADD PRIMARY KEY (id);
+ALTER TABLE tags ADD PRIMARY KEY (id);
 
 
 
--- ALTER TABLE badges ADD CONSTRAINT fk_badges_user_id
--- FOREIGN KEY (user_id) REFERENCES users(id);
+ALTER TABLE badges ADD CONSTRAINT fk_badges_user_id
+FOREIGN KEY (user_id) REFERENCES users(id);
 
 ALTER TABLE comments
 ADD CONSTRAINT fk_comments_post_id FOREIGN KEY (post_id) REFERENCES posts(id),

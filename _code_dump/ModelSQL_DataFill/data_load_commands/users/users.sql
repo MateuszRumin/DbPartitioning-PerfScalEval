@@ -1,8 +1,8 @@
-USE stackexchenege;
+USE testdb;
 
 
 LOAD XML
-INFILE 'C:/datafill//Users.xml'
+INFILE '/var/lib/mysqlfiles/Users.xml'
 INTO TABLE users (
 	@Id, @Reputation, @CreationDate, @DisplayName, 
     @LastAccessDate, @WebsiteUrl, @Location, @AboutMe, 

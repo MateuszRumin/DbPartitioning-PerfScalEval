@@ -1,8 +1,8 @@
-USE stackexchenege;
+USE testdb;
 
 
 LOAD XML
-INFILE 'C:/datafill//PostLinks.xml'
+INFILE '/var/lib/mysqlfiles/PostLinks.xml'
 INTO TABLE post_links (
 	@Id, @CreationDate, @PostId, @RelatedPostId, @LinkTypeId
 )

@@ -1,8 +1,8 @@
-USE stackexchenege;
+USE testdb;
 
 
 LOAD XML
-INFILE 'C:/datafill//Badges.xml'
+INFILE '/var/lib/mysqlfiles/Badges.xml'
 INTO TABLE badges (
 	@Id, @UserID, @Name, @Date, @Class, @TagBased
 )

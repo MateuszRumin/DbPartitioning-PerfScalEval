@@ -2,7 +2,7 @@ USE stackexchenege;
 
 
 LOAD XML
-INFILE 'D:/split_files_votes/Votes_Part_1.xml'
+INFILE '/var/lib/mysqlfiles/Votes.xml'
 INTO TABLE votes (
 	@Id, @PostId, @VoteTypeId, @CreationDate
 )

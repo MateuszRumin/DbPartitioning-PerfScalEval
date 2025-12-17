@@ -1,3 +1,7 @@
+sudo mkdir -p /usr/local/mysql/data/tmp
+sudo chown mysql:mysql /usr/local/mysql/data/tmp
+sudo chmod 1777 /usr/local/mysql/data/tmp
+
 -- Pamięć i buforowanie
 
 --Określa rozmiar puli buforów InnoDB, która przechowuje dane i indeksy:

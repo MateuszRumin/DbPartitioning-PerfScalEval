@@ -1,10 +1,10 @@
-USE stackexchenege;
+USE testdb;
 
 
 
 
 LOAD XML
-INFILE 'C:/posts_split/Posts_Part_1.xml'
+INFILE '/var/lib/mysqlfiles/Posts.xml'
 INTO TABLE posts (
 	@Id, @PostTypeId, @CreationDate, @ParentID, @AcceptedAnswerId, 
 	@Score, @ViewCount, @Body, @OwnerUserId, @LastEditorUserId,

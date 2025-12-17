@@ -1,9 +1,9 @@
-USE stackexchenege;
+USE testdb;
 
 
 
 LOAD XML
-INFILE 'D:/split_files_comments/Comments_Part_5.xml'
+INFILE '/var/lib/mysqlfiles/Comments.xml'
 INTO TABLE comments (
 	@Id, @PostId, @Score, @Text, 
     @CreationDate, @UserId, @ContentLicense

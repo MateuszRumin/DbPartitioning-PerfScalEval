@@ -1,9 +1,9 @@
-USE stackexchenege;
+USE testdb;
 
 
 
 LOAD XML
-INFILE 'D:/split_files_posthistory/PostHistory_Part_21.xml'
+INFILE '/var/lib/mysqlfiles/PostHistory.xml'
 INTO TABLE post_history (
 	@Id, @PostHistoryTypeId, @PostId, @RevisionGUID,
     @CreationDate, @UserId, @Text, @ContentLicense

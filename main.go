@@ -15,7 +15,7 @@ var (
 func main() {
 	a := app.New()
 	mainWindow = a.NewWindow("Perf-Scal-eval")
-	mainWindow.Resize(fyne.NewSize(850, 500))
+	mainWindow.Resize(fyne.NewSize(300, 300))
 
 	initMainContent(a)
 
@@ -25,6 +25,8 @@ func main() {
 
 func initMainContent(a fyne.App) {
 	mainContent = container.NewStack()
+
+	mainContent.Add(mainLayout(a))
 
 	topMenu := topMenu(a) // Teraz bez callbacka
 	content := container.NewBorder(topMenu, nil, nil, nil, mainContent)
@@ -37,7 +39,7 @@ func initMainContent(a fyne.App) {
 
 func topMenu(a fyne.App) fyne.CanvasObject {
 
-	connectionsBtn := widget.NewButton("Połączenie", func() {
+	connectionsBtn := widget.NewButton("Ustawienia danych połączenia z bazą", func() {
 		setConnectionValues(a)
 
 	})
@@ -48,4 +50,26 @@ func topMenu(a fyne.App) fyne.CanvasObject {
 	)
 
 	return container.NewCenter(topMenu)
+}
+
+func mainLayout(a fyne.App) fyne.CanvasObject {
+
+	connectionsBtn := widget.NewButton("Test1", func() {
+		test1PopUP(a)
+
+	})
+
+	container1 := container.NewVBox(
+		connectionsBtn,
+	)
+	container2 := container.NewVBox(
+		widget.NewLabel("Test2"),
+	)
+
+	mainContent := container.NewHBox(
+		container1,
+		container2,
+	)
+
+	return container.NewCenter(mainContent)
 }
