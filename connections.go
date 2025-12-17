@@ -1,4 +1,4 @@
-package confmodel
+package main
 
 type ConnectionSetting struct {
 	Connection   int
@@ -11,19 +11,8 @@ type ConnectionSetting struct {
 	DatabaseName string
 }
 
-var Connection1 = ConnectionSetting{
+var Connection = ConnectionSetting{
 	Connection:   1,
-	Enable:       false,
-	ModelInfo:    "",
-	User:         "",
-	Host:         "",
-	Port:         "",
-	Password:     "",
-	DatabaseName: "",
-}
-
-var Connection2 = ConnectionSetting{
-	Connection:   2,
 	Enable:       false,
 	ModelInfo:    "",
 	User:         "",

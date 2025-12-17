@@ -1,11 +1,10 @@
 package main
 
 import (
-	"perfscaleval/applayout"
-
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/widget"
 )
 
 var (
@@ -15,24 +14,38 @@ var (
 
 func main() {
 	a := app.New()
-	mainWindow = a.NewWindow("Moja Aplikacja Testowa")
-	mainWindow.Resize(fyne.NewSize(1024, 768))
+	mainWindow = a.NewWindow("Perf-Scal-eval")
+	mainWindow.Resize(fyne.NewSize(850, 500))
 
-	initMainContent()
-	mainWindow.ShowAndRun()
+	initMainContent(a)
+
+	mainWindow.Show()
+	a.Run()
 }
 
-func initMainContent() {
+func initMainContent(a fyne.App) {
 	mainContent = container.NewStack()
 
-	// Inicjalizacja manager widoków
-	applayout.InitViewManager(mainContent)
-
-	topMenu := applayout.LayOut() // Teraz bez callbacka
+	topMenu := topMenu(a) // Teraz bez callbacka
 	content := container.NewBorder(topMenu, nil, nil, nil, mainContent)
 
 	// Ładowanie domyślnego widoku
-	applayout.SwitchView(applayout.CreateConnectionsContent())
+	// applayout.SwitchView(applayout.CreateConnectionsContent())
 
 	mainWindow.SetContent(content)
+}
+
+func topMenu(a fyne.App) fyne.CanvasObject {
+
+	connectionsBtn := widget.NewButton("Połączenie", func() {
+		setConnectionValues(a)
+
+	})
+	connectionsBtn.Resize(fyne.NewSize(220, 50))
+
+	topMenu := container.NewHBox(
+		connectionsBtn,
+	)
+
+	return container.NewCenter(topMenu)
 }
