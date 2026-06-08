@@ -1,4 +1,4 @@
-USE stackexchenege;
+USE testdb;
 
 
 LOAD XML
