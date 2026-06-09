@@ -35,7 +35,7 @@ func wantConnection(db *sql.DB) {
 	} else {
 		fmt.Println("Połączenie z bazą danych działa poprawnie.")
 
-		for _, query := range simpleSelect {
+		for _, query := range joinAnalize {
 			executeQuery(db, query)
 		}
 
