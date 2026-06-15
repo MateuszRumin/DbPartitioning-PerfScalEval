@@ -13,3 +13,5 @@ func main() {
 
 	multiThreadConnection(db)
 }
+
+//losowe losowe zapytania select z listy

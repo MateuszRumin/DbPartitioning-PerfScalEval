@@ -1,4 +1,4 @@
-module test4
+module test6
 
 go 1.25.2
 

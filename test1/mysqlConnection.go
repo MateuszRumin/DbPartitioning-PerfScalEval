@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -23,44 +24,90 @@ func setConnection() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	db.SetMaxOpenConns(1)
+	db.SetMaxIdleConns(1)
+	if err := db.Ping(); err != nil {
+		db.Close()
+		return nil, err
+	}
 	return db, nil
 }
 
-func wantConnection(db *sql.DB) {
+func testEntry() {
 	db, err := setConnection()
 	//err = db.Ping()
 	if err != nil {
 		log.Fatalf("Nie udało się połączyć z bazą danych: %v", err)
 	} else {
 		fmt.Println("Połączenie z bazą danych działa poprawnie.")
-
-		for _, query := range simpleSelect {
-			executeQuery(db, query)
+		exp := Experiment{
+			Name:    "NiePartycjonowana30gbTest1Uruchomienie1",
+			Queries: simpleSelect,
+			Runs:    10,
 		}
-
+		results := RunExperiment(db, exp)
+		if err := exportCSV("results.csv", results); err != nil {
+			log.Fatal(err)
+		}
 	}
 	defer db.Close()
 
 }
 
-func executeQuery(db *sql.DB, query string) {
-	fmt.Printf("Wykonuję zapytanie: %s\n", query)
-	rows, err := db.Query(query)
-	if err != nil {
-		log.Fatalf("Nie udało się wykonać zapytania: %v", err)
+func RunExperiment(db *sql.DB, exp Experiment) []QueryResult {
+	// WARM-UP
+	for i := 0; i < 10; i++ {
+		fmt.Println(i)
+		for _, q := range exp.Queries {
+			fmt.Println("i")
+			rows, err := db.Query(q)
+			if err != nil {
+				return nil
+			}
+			rows.Close()
+
+		}
 	}
-	defer rows.Close()
 
-	//for rows.Next() {
-	//var result int
-	//if err := rows.Scan(&result); err != nil {
-	//	log.Fatalf("Nie udało się zeskanować wyniku: %v", err)
-	//}
-	//fmt.Printf("Wynik zapytania: %d\n", result)
-	//}
+	var results []QueryResult
 
-	//if err := rows.Err(); err != nil {
-	//log.Fatalf("Błąd podczas iteracji po wynikach: %v", err)
-	//}
+	for i := 0; i < exp.Runs; i++ {
+		for _, q := range exp.Queries {
+			fmt.Println("o")
+			start := time.Now()
+			rows, err := db.Query(q)
+			if err != nil {
+				results = append(results, QueryResult{Query: q, Err: err})
+				continue
+			}
+
+			first := time.Now()
+			rowCount := 0
+
+			for rows.Next() {
+				rowCount++
+				var tmp interface{}
+				_ = rows.Scan(&tmp)
+			}
+
+			total := time.Since(start)
+			firstRow := first.Sub(start)
+
+			rows.Close()
+
+			exRows, parts, _ := Explain(db, q)
+
+			results = append(results, QueryResult{
+				Query:       q,
+				Duration:    total,
+				FirstRow:    firstRow,
+				Rows:        rowCount,
+				ExplainRows: exRows,
+				Partitions:  parts,
+				Err:         nil,
+			})
+		}
+	}
+
+	return results
 }

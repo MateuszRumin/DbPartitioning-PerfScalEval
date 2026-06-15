@@ -7,4 +7,4 @@ func main() {
 
 }
 
-//dodawanie losowych
+//updade wybranej liczby rekordów z wybranej liczby wątków

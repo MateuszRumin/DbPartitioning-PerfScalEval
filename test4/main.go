@@ -7,4 +7,4 @@ func main() {
 
 }
 
-//dodawanie losowych
+// dodawanie przez 10 min

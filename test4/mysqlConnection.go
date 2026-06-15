@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	fakedata "test3/generatefakedata"
+	fakedata "test4/generatefakedata"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -37,47 +37,34 @@ func setConnection() (*sql.DB, error) {
 	return db, nil
 }
 
-func checkConnectionAndRunTest(id int) {
-	// if id > 10 && id < 21 {
-	// 	time.Sleep(20 * time.Second)
-	// }
+func checkConnectionAndRunTest(id int, deadline time.Time) {
 	db, err := setConnection()
 	if err != nil {
-		log.Fatalf("Nie udało się połączyć z bazą danych: %v", err)
-	} else {
-		fmt.Println("Połączenie z bazą danych działa poprawnie. Wątek: ", id)
-		for l := 0; l < 10; l++ {
-
-			testDb(db, id)
-		}
+		log.Printf("Błąd połączenia: %v", err)
+		return
 	}
 	defer db.Close()
 
+	for time.Now().Before(deadline) {
+		testDb(db, id)
+	}
 }
 
 func multiThread(workersCount int) {
+	var wg sync.WaitGroup
 
-	if workersCount < 1 {
-		fmt.Println("Liczba workerów musi być większa niż 0.")
-		return
-	} else if workersCount == 1 {
-		checkConnectionAndRunTest(0)
-	} else if workersCount > 1 {
-		var wg sync.WaitGroup
+	deadline := time.Now().Add(10 * time.Minute)
 
-		for i := 0; i < 20; i++ {
-			wg.Add(1)
+	for i := 0; i < workersCount; i++ {
+		wg.Add(1)
 
-			go func(id int) {
-				defer wg.Done()
-				checkConnectionAndRunTest(id)
-			}(i)
-		}
-
-		wg.Wait()
-
+		go func(id int) {
+			defer wg.Done()
+			checkConnectionAndRunTest(id, deadline)
+		}(i)
 	}
 
+	wg.Wait()
 }
 
 func executeQuery(db *sql.DB, query string, id int) (err error) {
