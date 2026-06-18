@@ -1,9 +1,8 @@
-package main
+package sqlgenerate
 
 import (
 	"database/sql"
 	"fmt"
-	"math/rand/v2"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -54,21 +53,4 @@ func GenerateInitValues() (map[string][]int, error) {
 	}
 
 	return ids, nil
-}
-
-func main() {
-
-	ids, err := GenerateInitValues()
-	if err != nil {
-		fmt.Print("Błąd generacji zapytania")
-
-	}
-
-	r := rand.New(rand.NewPCG(1, 2))
-
-	for i := 0; i < 30; i++ {
-		query := GenerateRandomQuery(r, ids)
-		fmt.Println(query)
-	}
-
 }
