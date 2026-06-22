@@ -32,7 +32,7 @@ func setConnection() (*sql.DB, error) {
 	return db, nil
 }
 
-func wantConnection(id int) {
+func wantConnection(id int, ids map[string][]int) {
 	fmt.Println("Worker:", id)
 
 	db, err := setConnection()
@@ -41,6 +41,33 @@ func wantConnection(id int) {
 	}
 	defer db.Close()
 
+	r := rand.New(rand.NewPCG(uint64(id), uint64(time.Now().UnixNano())))
+
+	deadline := time.Now().Add(10 * time.Minute)
+
+	for time.Now().Before(deadline) {
+
+		query := sqlgen.GenerateRandomQuery(r, ids)
+		//fmt.Printf("%s\n\n", query)
+
+		//start := time.Now()
+
+		err := executeQuery(db, query)
+		if err != nil {
+			log.Printf("[worker %d] błąd: %v", id, err)
+			continue
+		}
+
+		//duration := time.Since(start)
+
+		//metrics.Add(duration)
+
+	}
+
+	//fmt.Printf("Worker: %d wykonano\n", id)
+}
+
+func multiThreadConnection() {
 	ids, err := sqlgen.GenerateInitValues()
 	if err != nil {
 		log.Println("Błąd generacji zapytania")
@@ -57,41 +84,14 @@ func wantConnection(id int) {
 		len(ids["comments"]),
 	)
 
-	r := rand.New(rand.NewPCG(uint64(id), uint64(time.Now().UnixNano())))
-
-	deadline := time.Now().Add(10 * time.Minute)
-
-	for time.Now().Before(deadline) {
-
-		query := sqlgen.GenerateRandomQuery(r, ids)
-		fmt.Printf("%s\n\n", query)
-
-		start := time.Now()
-
-		err := executeQuery(db, query)
-
-		duration := time.Since(start)
-
-		metrics.Add(duration)
-
-		if err != nil {
-			log.Printf("[worker %d] błąd: %v", id, err)
-			continue
-		}
-	}
-
-	//fmt.Printf("Worker: %d wykonano\n", id)
-}
-
-func multiThreadConnection() {
 	var wg sync.WaitGroup
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 20; i++ {
 		wg.Add(1)
 
 		go func(id int) {
 			defer wg.Done()
-			wantConnection(id)
+			wantConnection(id, ids)
 		}(i)
 	}
 
@@ -107,9 +107,16 @@ func executeQuery(db *sql.DB, query string) error {
 	}
 	defer rows.Close()
 
+	count := 0
+	for rows.Next() {
+		count++
+	}
+
 	if err := rows.Err(); err != nil {
 		return fmt.Errorf("rows iteration error: %w", err)
 	}
+
+	fmt.Println("rows:", count)
 
 	return nil
 }

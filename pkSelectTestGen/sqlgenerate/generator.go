@@ -207,7 +207,7 @@ func (q ComByScorLow) Generate(r *rand.Rand, ids map[string][]int) string {
 
 	return fmt.Sprintf(`SELECT * FROM comments
     WHERE score < %d
-	ORDER BY creation_date DESC LIMIT %d, %d;`,
+	LIMIT %d, %d;`,
 		r.IntN(100), r.IntN(100), r.IntN(100))
 }
 
