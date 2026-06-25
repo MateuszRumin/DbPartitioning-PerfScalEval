@@ -15,6 +15,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+type QueryResults struct {
+	qtype    string
+	end      time.Time
+	duration time.Duration
+}
+
 func setConnection() (*sql.DB, error) {
 
 	user := "root"
@@ -22,6 +28,25 @@ func setConnection() (*sql.DB, error) {
 	host := "localhost"
 	port := "3306"
 	database := "testdb"
+	// Format DSN
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
+
+	// Połączenie z bazą danych
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
+
+func slc() (*sql.DB, error) {
+
+	user := "root"
+	password := ""
+	host := "localhost"
+	port := "3306"
+	database := "logDb"
 	// Format DSN
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
 
@@ -53,6 +78,7 @@ func wantConnection(id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, i
 		return
 	}
 	defer db.Close()
+	var qr []QueryResults
 
 	deadline := time.Now().Add(10 * time.Minute)
 
@@ -62,12 +88,35 @@ func wantConnection(id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, i
 		if query == "" {
 			continue
 		}
-
+		start := time.Now()
 		err := executeQuery(db, query)
 		if err != nil {
 			log.Printf("[worker %d] query error: %v", id, err)
 			continue
 		}
+		stop := time.Now()
+		duration := time.Since(start)
+
+		qr = append(qr, QueryResults{
+			qtype:    "SELECT", // np. SELECT, INSERT, UPDATE
+			end:      stop,
+			duration: duration,
+		})
+
+	}
+
+	db2, err := slc()
+	if err != nil {
+
+		return
+	}
+	defer db.Close()
+
+	for _, d := range qr {
+		fmt.Println(d.qtype, d.end, d.duration)
+
+		db2.Query(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')", d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds()))
+
 	}
 }
 
@@ -79,6 +128,7 @@ func multiThreadConnection() {
 	}
 
 	var wg sync.WaitGroup
+	start := time.Now()
 
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
@@ -93,7 +143,16 @@ func multiThreadConnection() {
 
 	wg.Wait()
 
-	PrintMinuteReport()
+	stop := time.Now()
+
+	db, err := slc()
+	if err != nil {
+
+		return
+	}
+	defer db.Close()
+	db.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')", "Select Real query", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
+
 }
 
 func executeQuery(db *sql.DB, query string) error {

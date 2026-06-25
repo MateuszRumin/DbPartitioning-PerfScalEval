@@ -154,7 +154,7 @@ func testDb(db *sql.DB, id int) {
 
 	case "votes":
 		data := fakedata.GenerateVote()
-		query := fmt.Sprintf("INSERT INTO votes (post_id, vote_type_id, creation_date) VALUES (%d, %d, %d, '%s');",
+		query := fmt.Sprintf("INSERT INTO votes (post_id, vote_type_id, creation_date) VALUES (%d, %d, '%s');",
 			data.PostID, data.VoteTypeID, data.CreationDate.Format("2006-01-02 15:04:05"))
 		if err := executeQuery(db, query, id); err != nil {
 			return
