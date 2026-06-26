@@ -80,7 +80,7 @@ func wantConnection(id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, i
 	defer db.Close()
 	var qr []QueryResults
 
-	deadline := time.Now().Add(3 * time.Minute)
+	deadline := time.Now().Add(1 * time.Hour)
 
 	for time.Now().Before(deadline) {
 
@@ -150,7 +150,7 @@ func multiThreadConnection() {
 		return
 	}
 	defer db.Close()
-	db.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')", "Select normal workload", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
+	db.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')", "Select normal workload 1h 10threads", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
 
 }
 
