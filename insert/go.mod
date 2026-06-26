@@ -1,4 +1,4 @@
-module insertSPs
+module insert
 
 go 1.25.2
 

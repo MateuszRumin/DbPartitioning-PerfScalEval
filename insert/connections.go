@@ -10,7 +10,7 @@ func setConnection() (*sql.DB, error) {
 
 	user := "root"
 	password := ""
-	host := "localhost"
+	host := "192.168.50.3"
 	port := "3306"
 	database := "testdb"
 	// Format DSN
@@ -43,4 +43,23 @@ func executeQuery(db *sql.DB, query string, id int) (err error) {
 	defer rows.Close()
 	return nil
 
+}
+
+func slc() (*sql.DB, error) {
+
+	user := "root"
+	password := ""
+	host := "192.168.50.3"
+	port := "3306"
+	database := "logdb"
+	// Format DSN
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
+
+	// Połączenie z bazą danych
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
