@@ -25,7 +25,7 @@ func setConnection() (*sql.DB, error) {
 
 	user := "root"
 	password := ""
-	host := "localhost"
+	host := "192.168.50.3"
 	port := "3306"
 	database := "testdb"
 	// Format DSN
@@ -44,7 +44,7 @@ func slc() (*sql.DB, error) {
 
 	user := "root"
 	password := ""
-	host := "localhost"
+	host := "192.168.50.3"
 	port := "3306"
 	database := "logdb"
 	// Format DSN
@@ -150,7 +150,7 @@ func multiThreadConnection() {
 		return
 	}
 	defer db.Close()
-	db.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')", "Select Real query", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
+	db.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')", "Select normal workload", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
 
 }
 

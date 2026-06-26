@@ -11,7 +11,7 @@ func setConnection() (*sql.DB, error) {
 
 	user := "root"
 	password := ""
-	host := "localhost"
+	host := "192.168.50.3"
 	port := "3306"
 	database := "testdb"
 	// Format DSN

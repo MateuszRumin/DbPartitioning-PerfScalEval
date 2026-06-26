@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	sqlgen "pkSelectTestGen/sqlgenerate"
+	sqlgen "range/sqlgenerate"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -25,7 +25,7 @@ func setConnection() (*sql.DB, error) {
 
 	user := "root"
 	password := ""
-	host := "localhost"
+	host := "192.168.50.3"
 	port := "3306"
 	database := "testdb"
 	// Format DSN
@@ -44,7 +44,7 @@ func slc() (*sql.DB, error) {
 
 	user := "root"
 	password := ""
-	host := "localhost"
+	host := "192.168.50.3"
 	port := "3306"
 	database := "logdb"
 	// Format DSN
@@ -80,7 +80,7 @@ func wantConnection(id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, i
 	defer db.Close()
 	var qr []QueryResults
 
-	deadline := time.Now().Add(3 * time.Minute)
+	deadline := time.Now().Add(1 * time.Hour)
 
 	for time.Now().Before(deadline) {
 
@@ -150,7 +150,7 @@ func multiThreadConnection() {
 		return
 	}
 	defer db.Close()
-	db.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')", "Select Real query", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
+	db.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')", "Select range workload 1h 10threads", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
 
 }
 
