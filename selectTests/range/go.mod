@@ -1,4 +1,4 @@
-module pkSelectTestGen
+module range
 
 go 1.25.2
 

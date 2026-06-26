@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	sqlgen "pkSelectTestGen/sqlgenerate"
+	sqlgen "normal/sqlgenerate"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -46,7 +46,7 @@ func slc() (*sql.DB, error) {
 	password := ""
 	host := "localhost"
 	port := "3306"
-	database := "logDb"
+	database := "logdb"
 	// Format DSN
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
 
@@ -80,7 +80,7 @@ func wantConnection(id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, i
 	defer db.Close()
 	var qr []QueryResults
 
-	deadline := time.Now().Add(10 * time.Minute)
+	deadline := time.Now().Add(3 * time.Minute)
 
 	for time.Now().Before(deadline) {
 
@@ -113,7 +113,6 @@ func wantConnection(id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, i
 	defer db.Close()
 
 	for _, d := range qr {
-		fmt.Println(d.qtype, d.end, d.duration)
 
 		db2.Query(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')", d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds()))
 
@@ -130,7 +129,7 @@ func multiThreadConnection() {
 	var wg sync.WaitGroup
 	start := time.Now()
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 10; i++ {
 		wg.Add(1)
 
 		go func(id int) {
