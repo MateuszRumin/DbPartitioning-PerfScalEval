@@ -1,10 +1,9 @@
-package sqlgenerate
+package main
 
 import (
 	"database/sql"
 	"fmt"
-
-	_ "github.com/go-sql-driver/mysql"
+	"log"
 )
 
 func setConnection() (*sql.DB, error) {
@@ -31,26 +30,17 @@ func setConnection() (*sql.DB, error) {
 	return db, nil
 }
 
-func GenerateInitValues() (map[string][]int, error) {
-
-	db, err := setConnection()
+func executeQuery(db *sql.DB, query string, id int) (err error) {
+	// fmt.Printf("Wykonuję zapytanie: %s\n", query)
+	rows, err := db.Query(query)
 	if err != nil {
-		fmt.Println("Błąd połaczenia z bazą danych")
-		return nil, err
+		//log.Printf("Zapytanie, które spowodowało błąd: %s\n", query)
+		log.Printf("Nie udało się wykonać zapytania: \n")
+		return err
+
 	}
+	fmt.Printf("Succes wątek id: %d \n", id)
+	defer rows.Close()
+	return nil
 
-	tables := []string{"badges", "users", "votes", "tags", "posts", "post_history", "post_links", "comments"}
-
-	ids := make(map[string][]int)
-
-	for _, table := range tables {
-		data, err := loadIDs(db, table)
-		if err != nil {
-			fmt.Println(table)
-			return nil, err
-		}
-		ids[table] = data
-	}
-
-	return ids, nil
 }

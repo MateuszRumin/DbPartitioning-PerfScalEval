@@ -3,97 +3,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
-	"math/rand"
-	"sync"
-	"time"
-
 	fakedata "insertSPs/generatefakedata"
-
-	_ "github.com/go-sql-driver/mysql"
+	"math/rand"
+	"time"
 )
-
-func setConnection() (*sql.DB, error) {
-
-	user := "root"
-	password := ""
-	host := "localhost"
-	port := "3306"
-	database := "testdb"
-	// Format DSN
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
-
-	// Połączenie z bazą danych
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		return nil, err
-	}
-	db.SetMaxOpenConns(1)
-	db.SetMaxIdleConns(1)
-	if err := db.Ping(); err != nil {
-		db.Close()
-		return nil, err
-	}
-	return db, nil
-}
-
-func checkConnectionAndRunTest(id int) {
-	// if id > 10 && id < 21 {
-	// 	time.Sleep(20 * time.Second)
-	// }
-	db, err := setConnection()
-	if err != nil {
-		log.Fatalf("Nie udało się połączyć z bazą danych: %v", err)
-	} else {
-		fmt.Println("Połączenie z bazą danych działa poprawnie. Wątek: ", id)
-		for l := 0; l < 10; l++ {
-
-			testDb(db, id)
-		}
-	}
-	defer db.Close()
-
-}
-
-func multiThread(workersCount int) {
-
-	if workersCount < 1 {
-		fmt.Println("Liczba workerów musi być większa niż 0.")
-		return
-	} else if workersCount == 1 {
-		checkConnectionAndRunTest(0)
-	} else if workersCount > 1 {
-		var wg sync.WaitGroup
-
-		for i := 0; i < 20; i++ {
-			wg.Add(1)
-
-			go func(id int) {
-				defer wg.Done()
-				checkConnectionAndRunTest(id)
-			}(i)
-		}
-
-		wg.Wait()
-
-	}
-
-}
-
-func executeQuery(db *sql.DB, query string, id int) (err error) {
-	// fmt.Printf("Wykonuję zapytanie: %s\n", query)
-	rows, err := db.Query(query)
-	if err != nil {
-		//log.Printf("Zapytanie, które spowodowało błąd: %s\n", query)
-		log.Printf("Nie udało się wykonać zapytania: \n")
-		return err
-
-	}
-	fmt.Printf("Succes wątek id: %d \n", id)
-	defer rows.Close()
-	return nil
-
-}
 
 func testDb(db *sql.DB, id int) {
 
