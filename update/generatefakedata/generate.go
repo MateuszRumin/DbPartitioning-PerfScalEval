@@ -2,6 +2,7 @@ package generatefakedata
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/brianvoe/gofakeit/v7"
 )
@@ -25,6 +26,10 @@ func GenerateComments() Comment {
 	if err != nil {
 		fmt.Println("Błąd generacji")
 	}
+	generated.CreationDate = gofakeit.DateRange(
+		time.Date(2008, 07, 31, 0, 0, 0, 0, time.UTC),
+		time.Date(2010, 12, 31, 0, 0, 0, 0, time.UTC),
+	)
 	return generated
 }
 
@@ -35,6 +40,10 @@ func GeneratePostHistory() PostHistory {
 	if err != nil {
 		fmt.Println("Błąd generacji")
 	}
+	generated.CreationDate = gofakeit.DateRange(
+		time.Date(2008, 07, 31, 0, 0, 0, 0, time.UTC),
+		time.Date(2010, 12, 31, 0, 0, 0, 0, time.UTC),
+	)
 	return generated
 }
 
@@ -45,6 +54,10 @@ func GeneratePostsLinks() PostLink {
 	if err != nil {
 		fmt.Println("Błąd generacji")
 	}
+	generated.CreationDate = gofakeit.DateRange(
+		time.Date(2008, 07, 31, 0, 0, 0, 0, time.UTC),
+		time.Date(2010, 12, 31, 0, 0, 0, 0, time.UTC),
+	)
 	return generated
 }
 
@@ -55,6 +68,10 @@ func GeneratePosts() Post {
 	if err != nil {
 		fmt.Println("Błąd generacji")
 	}
+	generated.CreationDate = gofakeit.DateRange(
+		time.Date(2008, 07, 31, 0, 0, 0, 0, time.UTC),
+		time.Date(2010, 12, 31, 0, 0, 0, 0, time.UTC),
+	)
 	return generated
 }
 
@@ -65,6 +82,10 @@ func GenerateUsers() User {
 	if err != nil {
 		fmt.Println("Błąd generacji")
 	}
+	generated.CreationDate = gofakeit.DateRange(
+		time.Date(2008, 07, 31, 0, 0, 0, 0, time.UTC),
+		time.Date(2010, 12, 31, 0, 0, 0, 0, time.UTC),
+	)
 	return generated
 }
 
@@ -75,5 +96,9 @@ func GenerateVote() Vote {
 	if err != nil {
 		fmt.Println("Błąd generacji")
 	}
+	generated.CreationDate = gofakeit.DateRange(
+		time.Date(2008, 07, 31, 0, 0, 0, 0, time.UTC),
+		time.Date(2010, 12, 31, 0, 0, 0, 0, time.UTC),
+	)
 	return generated
 }

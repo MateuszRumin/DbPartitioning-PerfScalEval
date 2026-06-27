@@ -78,7 +78,7 @@ func checkConnectionAndRunTest(deadline time.Time, id int, idb int, idc int, idp
 
 		start := time.Now()
 
-		if err := executeQuery(db, query, id); err != nil {
+		if err := executeQuery(db, query); err != nil {
 			return
 		} else {
 			stop := time.Now()
