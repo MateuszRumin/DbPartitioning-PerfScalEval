@@ -39,7 +39,7 @@ func executeQuery(db *sql.DB, query string, id int) (err error) {
 		return err
 
 	}
-	fmt.Printf("Succes wątek id: %d \n", id)
+	// fmt.Printf("Succes wątek id: %d \n", id)
 	defer rows.Close()
 	return nil
 
