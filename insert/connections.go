@@ -60,6 +60,11 @@ func slc() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	db.SetMaxOpenConns(1)
+	db.SetMaxIdleConns(1)
+	if err := db.Ping(); err != nil {
+		db.Close()
+		return nil, err
+	}
 	return db, nil
 }
