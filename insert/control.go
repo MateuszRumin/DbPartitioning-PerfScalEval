@@ -12,7 +12,6 @@ import (
 func multiThread() {
 
 	var wg sync.WaitGroup
-	deadline := time.Now().Add(10 * time.Minute)
 
 	db, err := setConnection()
 	if err != nil {
@@ -34,6 +33,8 @@ func multiThread() {
 
 	start := time.Now()
 
+	deadline := time.Now().Add(30 * time.Minute)
+
 	for i := 0; i < 20; i++ {
 		wg.Add(1)
 
@@ -54,6 +55,6 @@ func multiThread() {
 	defer db2.Close()
 
 	db2.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')",
-		"Insert random 30min 10 threads np", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
+		"Insert random 30m 10 threads np", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
 
 }

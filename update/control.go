@@ -12,8 +12,6 @@ import (
 func multiThread() {
 	var wg sync.WaitGroup
 
-	deadline := time.Now().Add(10 * time.Minute)
-
 	db, err := setConnection()
 	if err != nil {
 		log.Printf("Błąd połączenia: %v", err)
@@ -33,6 +31,8 @@ func multiThread() {
 	}
 
 	start := time.Now()
+
+	deadline := time.Now().Add(30 * time.Minute)
 
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
