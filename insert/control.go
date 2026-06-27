@@ -42,6 +42,7 @@ func multiThread() {
 		log.Printf("Błąd połączenia: %v", err)
 		return
 	}
+	defer db.Close()
 
 	idb, errb := GetIDs(db, "SELECT id FROM badges")
 	idc, errc := GetIDs(db, "SELECT id FROM comments")
@@ -52,8 +53,6 @@ func multiThread() {
 		fmt.Printf("Brak danych o indeksach")
 		return
 	}
-
-	db.Close()
 
 	start := time.Now()
 
@@ -76,11 +75,9 @@ func multiThread() {
 	if err != nil {
 		return
 	}
+	defer db2.Close()
 
 	db2.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')",
 		"Insert random 30m 10 threads np", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
-
-	wg.Wait()
-	db2.Close()
 
 }

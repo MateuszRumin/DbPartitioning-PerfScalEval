@@ -104,13 +104,17 @@ func checkConnectionAndRunTest(deadline time.Time, idb []int, idc []int, idph []
 
 		return
 	}
-	defer db.Close()
-
+	defer db2.Close()
+	c := 0
 	for _, d := range qr {
 
-		db2.Query(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')",
+		_, err := db2.Query(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')",
 			d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds()))
+		if err != nil {
+			c++
+		}
 
 	}
+	fmt.Println(c)
 
 }
