@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"sync"
@@ -8,6 +9,29 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 )
+
+func GetIDs(db *sql.DB, query string) ([]int, error) {
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var ids []int
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return ids, nil
+}
 
 func multiThread() {
 	var wg sync.WaitGroup
@@ -19,12 +43,11 @@ func multiThread() {
 	}
 	defer db.Close()
 
-	var idb, idc, idph, idp, idu int
-	errb := db.QueryRow("SELECT COUNT(*) FROM badges").Scan(&idb)
-	errc := db.QueryRow("SELECT COUNT(*) FROM comments").Scan(&idc)
-	errph := db.QueryRow("SELECT COUNT(*) FROM post_history").Scan(&idph)
-	errp := db.QueryRow("SELECT COUNT(*) FROM posts").Scan(&idp)
-	erru := db.QueryRow("SELECT COUNT(*) FROM users").Scan(&idu)
+	idb, errb := GetIDs(db, "SELECT id FROM badges")
+	idc, errc := GetIDs(db, "SELECT id FROM comments")
+	idph, errph := GetIDs(db, "SELECT id FROM post_history")
+	idp, errp := GetIDs(db, "SELECT id FROM posts")
+	idu, erru := GetIDs(db, "SELECT id FROM users")
 	if errb != nil || errc != nil || errph != nil || errp != nil || erru != nil {
 		fmt.Printf("Brak danych o indeksach")
 		return
