@@ -14,7 +14,7 @@ type QueryResults struct {
 	duration time.Duration
 }
 
-func ChooseTable() string {
+func ChooseTable(idb int, idc int, idph int, idp int, idu int) string {
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	whatTable := []string{"badges", "comments", "posthistory", "postlinks", "posts", "users", "votes"}
@@ -23,27 +23,27 @@ func ChooseTable() string {
 	case "badges":
 		data := fakedata.GenerateBadge()
 		return fmt.Sprintf("INSERT INTO badges (user_id, badge_name, badge_date, class, tag_based) VALUES ( %d, '%s', '%s', %d, '%s');",
-			data.UserID, data.BadgeName, data.BadgeDate.Format("2006-01-02 15:04:05"), data.Class, data.TagBased)
+			r.Intn(idu)+1, data.BadgeName, data.BadgeDate.Format("2006-01-02 15:04:05"), data.Class, data.TagBased)
 
 	case "comments":
 		data := fakedata.GenerateComments()
 		return fmt.Sprintf("INSERT INTO comments (post_id, score, comment_text, creation_date, user_id, content_license) VALUES ( %d, %d, '%s', '%s', %d, '%s');",
-			data.PostID, data.Score, data.CommentText, data.CreationDate.Format("2006-01-02 15:04:05"), data.UserID, data.ContentLicense)
+			r.Intn(idp)+1, data.Score, data.CommentText, data.CreationDate.Format("2006-01-02 15:04:05"), r.Intn(idu)+1, data.ContentLicense)
 
 	case "posthistory":
 		data := fakedata.GeneratePostHistory()
 		return fmt.Sprintf("INSERT INTO post_history (post_history_type_id, post_id, revision_guid, creation_date, user_id, post_text, content_license) VALUES ( %d, %d, '%s', '%s', %d, '%s', '%s');",
-			data.PostHistoryTypeID, data.PostID, data.RevisionGUID, data.CreationDate.Format("2006-01-02 15:04:05"), data.UserID, data.PostText, data.ContentLicense)
+			r.Intn(idph)+1, r.Intn(idp)+1, data.RevisionGUID, data.CreationDate.Format("2006-01-02 15:04:05"), r.Intn(idu)+1, data.PostText, data.ContentLicense)
 
 	case "postlinks":
 		data := fakedata.GeneratePostsLinks()
 		return fmt.Sprintf("INSERT INTO post_links ( creation_date, post_id, related_post_id, link_type_id) VALUES ('%s', %d, %d, %d);",
-			data.CreationDate.Format("2006-01-02 15:04:05"), data.PostID, data.RelatedPostID, data.LinkTypeID)
+			data.CreationDate.Format("2006-01-02 15:04:05"), r.Intn(idp)+1, r.Intn(idp)+1, data.LinkTypeID)
 
 	case "posts":
 		data := fakedata.GeneratePosts()
 		return fmt.Sprintf("INSERT INTO posts (post_type_id, accepted_answer_id, parent_id, creation_date, score, view_count, post_body, owner_user_id, last_editor_user_id, last_edit_date, last_activity_date, post_title, tags, answer_count, comment_count, content_license) VALUES ( %d, %d, %d, '%s', %d, %d, '%s', %d, %d, '%s', '%s', '%s', '%s', %d, %d, '%s');",
-			data.PostTypeID, data.AcceptedAnswerID, data.ParentID, data.CreationDate.Format("2006-01-02 15:04:05"), data.Score, data.ViewCount, data.PostBody, data.OwnerUserID, data.LastEditorUserID, data.LastEditDate.Format("2006-01-02 15:04:05"), data.LastActivityDate.Format("2006-01-02 15:04:05"), data.PostTitle, data.Tags, data.AnswerCount, data.CommentCount, data.ContentLicense)
+			data.PostTypeID, data.AcceptedAnswerID, r.Intn(idp)+1, data.CreationDate.Format("2006-01-02 15:04:05"), data.Score, data.ViewCount, data.PostBody, r.Intn(idu)+1, r.Intn(idu)+1, data.LastEditDate.Format("2006-01-02 15:04:05"), data.LastActivityDate.Format("2006-01-02 15:04:05"), data.PostTitle, data.Tags, data.AnswerCount, data.CommentCount, data.ContentLicense)
 
 	case "users":
 		data := fakedata.GenerateUsers()
@@ -53,14 +53,14 @@ func ChooseTable() string {
 	case "votes":
 		data := fakedata.GenerateVote()
 		return fmt.Sprintf("INSERT INTO votes (post_id, vote_type_id, creation_date) VALUES (%d, %d, '%s');",
-			data.PostID, data.VoteTypeID, data.CreationDate.Format("2006-01-02 15:04:05"))
+			r.Intn(idp)+1, data.VoteTypeID, data.CreationDate.Format("2006-01-02 15:04:05"))
 
 	}
 	return ""
 
 }
 
-func checkConnectionAndRunTest(deadline time.Time, id int) {
+func checkConnectionAndRunTest(deadline time.Time, id int, idb int, idc int, idph int, idp int, idu int) {
 	// if id > 10 && id < 21 {
 	// 	time.Sleep(20 * time.Second)
 	// }
@@ -74,7 +74,7 @@ func checkConnectionAndRunTest(deadline time.Time, id int) {
 
 	for time.Now().Before(deadline) {
 
-		query := ChooseTable()
+		query := ChooseTable(idb, idc, idph, idp, idu)
 
 		start := time.Now()
 

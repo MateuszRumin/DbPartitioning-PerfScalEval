@@ -29,7 +29,7 @@ func chooseTable(idb int, idc int, idph int, idp int, idu int) string {
 	case "comments":
 		data := fakedata.GenerateComments()
 		return fmt.Sprintf("Update comments SET score = %d, comment_text = '%s', creation_date = '%s', user_id = %d, content_license = '%s' WHERE id = %d;",
-			data.Score, data.CommentText, data.CreationDate.Format("2006-01-02 15:04:05"), data.UserID, data.ContentLicense, r.Intn(idc)+1)
+			data.Score, data.CommentText, data.CreationDate.Format("2006-01-02 15:04:05"), r.Intn(idu)+1, data.ContentLicense, r.Intn(idc)+1)
 
 	case "posthistory":
 		data := fakedata.GeneratePostHistory()

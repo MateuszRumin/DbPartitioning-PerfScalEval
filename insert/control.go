@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"sync"
 	"time"
 
@@ -13,6 +14,24 @@ func multiThread() {
 	var wg sync.WaitGroup
 	deadline := time.Now().Add(10 * time.Minute)
 
+	db, err := setConnection()
+	if err != nil {
+		log.Printf("Błąd połączenia: %v", err)
+		return
+	}
+	defer db.Close()
+
+	var idb, idc, idph, idp, idu int
+	errb := db.QueryRow("SELECT COUNT(*) FROM badges").Scan(&idb)
+	errc := db.QueryRow("SELECT COUNT(*) FROM comments").Scan(&idc)
+	errph := db.QueryRow("SELECT COUNT(*) FROM post_history").Scan(&idph)
+	errp := db.QueryRow("SELECT COUNT(*) FROM posts").Scan(&idp)
+	erru := db.QueryRow("SELECT COUNT(*) FROM users").Scan(&idu)
+	if errb != nil || errc != nil || errph != nil || errp != nil || erru != nil {
+		fmt.Printf("Brak danych o indeksach")
+		return
+	}
+
 	start := time.Now()
 
 	for i := 0; i < 20; i++ {
@@ -20,7 +39,7 @@ func multiThread() {
 
 		go func(id int) {
 			defer wg.Done()
-			checkConnectionAndRunTest(deadline, id)
+			checkConnectionAndRunTest(deadline, id, idb, idc, idph, idp, idu)
 		}(i)
 	}
 

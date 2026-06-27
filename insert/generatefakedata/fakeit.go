@@ -18,7 +18,7 @@ type Comment struct {
 	PostID         int32     `fake:"{number:1,1000}"`
 	Score          int32     `fake:"{number:0,100}"`
 	CommentText    string    `fake:"{sentence:10}"`
-	CreationDate   time.Time `fake:"{date}"`
+	CreationDate   time.Time `fake:"{date:2008-07-31,2010-12-31}"`
 	UserID         int32     `fake:"{number:1,100}"`
 	ContentLicense string    `fake:"{randomstring:[CC BY-SA, MIT, Apache]}"`
 }
@@ -28,7 +28,7 @@ type PostHistory struct {
 	PostHistoryTypeID int32     `fake:"{number:1,10}"`
 	PostID            int32     `fake:"{number:1,1000}"`
 	RevisionGUID      string    `fake:"{uuid}"`
-	CreationDate      time.Time `fake:"{date}"`
+	CreationDate      time.Time `fake:"{date:2008-07-31,2010-12-31}"`
 	UserID            int32     `fake:"{number:1,100}"`
 	PostText          string    `fake:"{paragraph}"`
 	ContentLicense    string    `fake:"{randomstring:[CC BY-SA, MIT, Apache]}"`
@@ -36,7 +36,7 @@ type PostHistory struct {
 
 type PostLink struct {
 	ID            int32     `gorm:"primaryKey;"`
-	CreationDate  time.Time `fake:"{date}"`
+	CreationDate  time.Time `fake:"{date:2008-07-31,2010-12-31}"`
 	PostID        int32     `fake:"{number:1,1000}"`
 	RelatedPostID int32     `fake:"{number:1,1000}"`
 	LinkTypeID    int32     `fake:"{number:1,5}"`
@@ -47,7 +47,7 @@ type Post struct {
 	PostTypeID       int       `fake:"{number:1,10}"`
 	AcceptedAnswerID int       `fake:"{number:1,100}"`
 	ParentID         int       `fake:"{number:1,100}"`
-	CreationDate     time.Time `fake:"{date}"`
+	CreationDate     time.Time `fake:"{date:2008-07-31,2010-12-31}"`
 	Score            int       `fake:"{number:0,1000}"`
 	ViewCount        int       `fake:"{number:0,100000}"`
 	PostBody         string    `fake:"{sentence:30}"`
@@ -66,7 +66,7 @@ type Post struct {
 type User struct {
 	ID             int32     `gorm:"primaryKey;"`
 	Reputation     int       `fake:"{number:0,100000}"`
-	CreationDate   time.Time `fake:"{date}"`
+	CreationDate   time.Time `fake:"{date:2008-07-31,2010-12-31}"`
 	DisplayName    string    `fake:"{username}"`
 	LastAccessDate time.Time `fake:"{date}"`
 	WebsiteURL     string    `fake:"{url}"`
@@ -82,5 +82,5 @@ type Vote struct {
 	ID           int32     `gorm:"primaryKey;"`
 	PostID       int32     `fake:"{number:1,1000}"`
 	VoteTypeID   int       `fake:"{number:1,10}"`
-	CreationDate time.Time `fake:"{date}"`
+	CreationDate time.Time `fake:"{date:2008-07-31,2010-12-31}"`
 }

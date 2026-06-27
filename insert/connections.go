@@ -35,7 +35,7 @@ func executeQuery(db *sql.DB, query string, id int) (err error) {
 	rows, err := db.Query(query)
 	if err != nil {
 		//log.Printf("Zapytanie, które spowodowało błąd: %s\n", query)
-		log.Printf("Nie udało się wykonać zapytania: \n")
+		log.Printf("Nie udało się wykonać zapytania:%s \n", err)
 		return err
 
 	}
