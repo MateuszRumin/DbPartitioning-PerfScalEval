@@ -75,7 +75,7 @@ func multiThread() {
 	}
 	defer db2.Close()
 
-	db2.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')",
+	db2.Exec(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')",
 		"Update random 30min 10 threads np", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
 
 }

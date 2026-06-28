@@ -79,13 +79,11 @@ func checkConnectionAndRunTest(id int, deadline time.Time, idb []int, idc []int,
 		if err != nil {
 			continue
 		} else {
-			stop := time.Now()
-			duration := time.Since(start)
 
 			qr = append(qr, QueryResults{
 				qtype:    "Update",
-				end:      stop,
-				duration: duration,
+				end:      time.Now(),
+				duration: time.Since(start),
 			})
 		}
 
@@ -95,11 +93,11 @@ func checkConnectionAndRunTest(id int, deadline time.Time, idb []int, idc []int,
 
 		return
 	}
-	defer db.Close()
+	defer db2.Close()
 
 	for _, d := range qr {
 
-		db2.Query(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')", d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds()))
+		db2.Exec(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')", d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds()))
 
 	}
 
