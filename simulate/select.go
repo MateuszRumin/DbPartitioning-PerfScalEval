@@ -43,13 +43,11 @@ func selectTest(id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, idu i
 			log.Printf("[worker %d] query error: %v", id, err)
 			continue
 		}
-		stop := time.Now()
-		duration := time.Since(start)
 
 		qr = append(qr, QueryResults{
 			qtype:    "SELECT", // np. SELECT, INSERT, UPDATE
-			end:      stop,
-			duration: duration,
+			end:      time.Now(),
+			duration: time.Since(start),
 		})
 
 	}
@@ -59,11 +57,11 @@ func selectTest(id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, idu i
 
 		return
 	}
-	defer db.Close()
+	defer db2.Close()
 
 	for _, d := range qr {
 
-		db2.Query(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')", d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds()))
+		db2.Exec(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')", d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds()))
 
 	}
 }

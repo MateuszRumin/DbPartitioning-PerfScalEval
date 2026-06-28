@@ -97,13 +97,12 @@ func checkConnectionAndRunTest(deadline time.Time, idb []int, idc []int, idph []
 		}
 
 	}
-	fmt.Println("koniec pętli")
+
 	db2, err := slc()
 	if err != nil {
 		return
 	}
 	defer db2.Close()
-	fmt.Println("połączono")
 
 	for _, d := range qr {
 

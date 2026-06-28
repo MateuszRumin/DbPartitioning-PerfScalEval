@@ -67,7 +67,7 @@ func wantConnection(id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, i
 
 		return
 	}
-	defer db.Close()
+	defer db2.Close()
 
 	for _, d := range qr {
 

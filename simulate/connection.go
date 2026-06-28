@@ -30,7 +30,7 @@ func setConnection() (*sql.DB, error) {
 	return db, nil
 }
 
-func executeQuery(db *sql.DB, query string, id int) (err error) {
+func executeQuery(db *sql.DB, query string) (err error) {
 	// fmt.Printf("Wykonuję zapytanie: %s\n", query)
 	rows, err := db.Query(query)
 	if err != nil {
@@ -39,7 +39,7 @@ func executeQuery(db *sql.DB, query string, id int) (err error) {
 		return err
 
 	}
-	fmt.Printf("Succes wątek id: %d \n", id)
+
 	defer rows.Close()
 	return nil
 
@@ -71,6 +71,8 @@ func slc() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	db.SetMaxOpenConns(5)
+	db.SetMaxIdleConns(1)
 
 	return db, nil
 }

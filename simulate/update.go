@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func chooseTableUpdate(idb int, idc int, idph int, idp int, idu int) string {
+func chooseTableUpdate(idb []int, idc []int, idph []int, idp []int, idu []int) string {
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	whatTable := []string{"badges", "comments", "posthistory", "posts", "users"}
@@ -18,39 +18,38 @@ func chooseTableUpdate(idb int, idc int, idph int, idp int, idu int) string {
 	case "badges":
 		data := fakedata.GenerateBadge()
 		return fmt.Sprintf("Update badges SET badge_name = '%s', badge_date = '%s', class = %d, tag_based = '%s' WHERE id = %d;",
-			data.BadgeName, data.BadgeDate.Format("2006-01-02 15:04:05"), data.Class, data.TagBased, r.Intn(idb)+1)
+			escapeSQL(data.BadgeName), data.BadgeDate.Format("2006-01-02 15:04:05"), data.Class, escapeSQL(data.TagBased), idb[r.Intn(len(idb))])
 
 	case "comments":
 		data := fakedata.GenerateComments()
 		return fmt.Sprintf("Update comments SET score = %d, comment_text = '%s', creation_date = '%s', user_id = %d, content_license = '%s' WHERE id = %d;",
-			data.Score, data.CommentText, data.CreationDate.Format("2006-01-02 15:04:05"), data.UserID, data.ContentLicense, r.Intn(idc)+1)
+			data.Score, escapeSQL(data.CommentText), data.CreationDate.Format("2006-01-02 15:04:05"), idu[r.Intn(len(idu))], escapeSQL(data.ContentLicense), idc[r.Intn(len(idc))])
 
 	case "posthistory":
 		data := fakedata.GeneratePostHistory()
 
 		return fmt.Sprintf("Update post_history SET post_history_type_id = %d, revision_guid = '%s', creation_date = '%s', post_text = '%s', content_license = '%s' WHERE id = %d;",
-			data.PostHistoryTypeID, data.RevisionGUID, data.CreationDate.Format("2006-01-02 15:04:05"), data.PostText, data.ContentLicense, r.Intn(idph)+1)
+			data.PostHistoryTypeID, escapeSQL(data.RevisionGUID), data.CreationDate.Format("2006-01-02 15:04:05"), escapeSQL(data.PostText), escapeSQL(data.ContentLicense), idph[r.Intn(len(idph))])
 
 	case "posts":
 		data := fakedata.GeneratePosts()
 
 		return fmt.Sprintf("Update posts SET   score = %d, view_count = %d, post_body = '%s',   last_edit_date = '%s', last_activity_date = '%s', post_title = '%s', tags = '%s', answer_count = %d, comment_count = %d, content_license = '%s' WHERE id = %d;",
-			data.Score, data.ViewCount, data.PostBody, data.LastEditDate.Format("2006-01-02 15:04:05"), data.LastActivityDate.Format("2006-01-02 15:04:05"),
-			data.PostTitle, data.Tags, data.AnswerCount, data.CommentCount, data.ContentLicense, r.Intn(idp)+1)
+			data.Score, data.ViewCount, escapeSQL(data.PostBody), data.LastEditDate.Format("2006-01-02 15:04:05"), data.LastActivityDate.Format("2006-01-02 15:04:05"),
+			escapeSQL(data.PostTitle), escapeSQL(data.Tags), data.AnswerCount, data.CommentCount, escapeSQL(data.ContentLicense), idp[r.Intn(len(idp))])
 
 	case "users":
 		data := fakedata.GenerateUsers()
 
 		return fmt.Sprintf("Update users SET reputation = %d, display_name = '%s',  website_url = '%s', location = '%s', about_me = '%s', views = %d, upvotes = %d, downvotes = %d WHERE id = %d;",
-			data.Reputation, data.DisplayName, data.WebsiteURL, data.Location, data.AboutMe, data.Views, data.Upvotes, data.Downvotes, r.Intn(idu)+1)
+			data.Reputation, escapeSQL(data.DisplayName), escapeSQL(data.WebsiteURL), escapeSQL(data.Location), escapeSQL(data.AboutMe), data.Views, data.Upvotes, data.Downvotes, idu[r.Intn(len(idu))])
 
 	}
 
 	return ""
 
 }
-
-func updateTest(id int, deadline time.Time, idb int, idc int, idph int, idp int, idu int) {
+func updateTest(deadline time.Time, idb []int, idc []int, idph []int, idp []int, idu []int) {
 	db, err := setConnection()
 	if err != nil {
 		log.Printf("Błąd połączenia: %v", err)
@@ -64,17 +63,15 @@ func updateTest(id int, deadline time.Time, idb int, idc int, idph int, idp int,
 
 		query := chooseTableUpdate(idb, idc, idph, idp, idu)
 		start := time.Now()
-		err := executeQuery(db, query, id)
+		err := executeQuery(db, query)
 		if err != nil {
 			continue
 		} else {
-			stop := time.Now()
-			duration := time.Since(start)
 
 			qr = append(qr, QueryResults{
 				qtype:    "Update",
-				end:      stop,
-				duration: duration,
+				end:      time.Now(),
+				duration: time.Since(start),
 			})
 		}
 
@@ -84,12 +81,11 @@ func updateTest(id int, deadline time.Time, idb int, idc int, idph int, idp int,
 
 		return
 	}
-	defer db.Close()
+	defer db2.Close()
 
 	for _, d := range qr {
 
-		db2.Query(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')",
-			d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds()))
+		db2.Exec(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')", d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds()))
 
 	}
 
