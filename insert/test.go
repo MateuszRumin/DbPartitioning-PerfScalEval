@@ -71,7 +71,8 @@ func checkConnectionAndRunTest(deadline time.Time, idb []int, idc []int, idph []
 	// }
 	db, err := setConnection()
 	if err != nil {
-		log.Fatalf("Nie udało się połączyć z bazą danych: %v", err)
+		log.Printf("Nie udało się połączyć z bazą danych: %v", err)
+		return
 	}
 	defer db.Close()
 
@@ -83,38 +84,32 @@ func checkConnectionAndRunTest(deadline time.Time, idb []int, idc []int, idph []
 
 		start := time.Now()
 
-		if err := executeQuery(db, query); err != nil {
+		err := executeQuery(db, query)
+		if err != nil {
 			continue
 		} else {
-			stop := time.Now()
-			duration := time.Since(start)
 
 			qr = append(qr, QueryResults{
 				qtype:    "Insert",
-				end:      stop,
-				duration: duration,
+				end:      time.Now(),
+				duration: time.Since(start),
 			})
-
 		}
 
 	}
-
+	fmt.Println("koniec pętli")
 	db2, err := slc()
 	if err != nil {
-
 		return
 	}
 	defer db2.Close()
-	c := 0
+	fmt.Println("połączono")
+
 	for _, d := range qr {
 
-		_, err := db2.Query(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')",
+		db2.Exec(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')",
 			d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds()))
-		if err != nil {
-			c++
-		}
 
 	}
-	fmt.Println(c)
 
 }

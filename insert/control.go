@@ -56,9 +56,9 @@ func multiThread() {
 
 	start := time.Now()
 
-	deadline := time.Now().Add(30 * time.Minute)
+	deadline := time.Now().Add(1 * time.Minute)
 
-	for i := 0; i < 20; i++ {
+	for i := 0; i < 10; i++ {
 		wg.Add(1)
 
 		go func(id int) {
@@ -77,7 +77,7 @@ func multiThread() {
 	}
 	defer db2.Close()
 
-	db2.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')",
+	db2.Exec(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')",
 		"Insert random 30m 10 threads np", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
 
 }
