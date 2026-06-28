@@ -75,7 +75,7 @@ func checkConnectionAndRunTest(id int, deadline time.Time, idb []int, idc []int,
 
 		query := chooseTable(idb, idc, idph, idp, idu)
 		start := time.Now()
-		err := executeQuery(db, query, id)
+		err := executeQuery(db, query)
 		if err != nil {
 			continue
 		} else {
