@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"strings"
 	"time"
-	fakedata "update/generatefakedata"
+	fakedata "upd/generatefakedata"
 )
 
 type QueryResults struct {

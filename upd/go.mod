@@ -1,4 +1,4 @@
-module update
+module upd
 
 go 1.25.2
 
