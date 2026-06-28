@@ -61,7 +61,7 @@ func chooseTable(idb []int, idc []int, idph []int, idp []int, idu []int) string 
 
 }
 
-func checkConnectionAndRunTest(id int, deadline time.Time, idb []int, idc []int, idph []int, idp []int, idu []int) {
+func checkConnectionAndRunTest(deadline time.Time, idb []int, idc []int, idph []int, idp []int, idu []int) {
 	db, err := setConnection()
 	if err != nil {
 		log.Printf("Błąd połączenia: %v", err)

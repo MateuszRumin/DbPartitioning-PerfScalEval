@@ -62,7 +62,7 @@ func multiThread() {
 
 		go func(id int) {
 			defer wg.Done()
-			checkConnectionAndRunTest(id, deadline, idb, idc, idph, idp, idu)
+			checkConnectionAndRunTest(deadline, idb, idc, idph, idp, idu)
 		}(i)
 	}
 	wg.Wait()
