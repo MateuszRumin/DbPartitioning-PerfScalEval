@@ -66,10 +66,11 @@ func wantConnection(deadline time.Time, id int, r *rand.Rand, wg *sqlgen.WorkerG
 		return
 	}
 	defer db2.Close()
+	log.Printf("[worker %d] query loop ended, results: %d", id, len(qr))
 
 	for _, d := range qr {
 
-		_, err := db2.Exec(`INSERT INTO QueryResults(query_type, timeEnded, duration_ms)VALUES (?, ?, ?)`, d.qtype, d.end, d.duration.Milliseconds())
+		_, err := db2.Exec(`INSERT INTO QueryResults (query_type, timeEnded, duration_ms) VALUES (?,?,?)`, d.qtype, d.end, d.duration.Milliseconds())
 		if err != nil {
 			log.Printf("[worker %d] result insert error: %v", id, err)
 		}
