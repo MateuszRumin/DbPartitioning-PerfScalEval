@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -20,7 +19,7 @@ func multiThreadConnection() {
 
 	var wg sync.WaitGroup
 	start := time.Now()
-	deadline := time.Now().Add(1 * time.Hour)
+	deadline := time.Now().Add(30 * time.Minute)
 
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
@@ -43,7 +42,9 @@ func multiThreadConnection() {
 		return
 	}
 	defer db.Close()
-	db.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')",
-		"Select range workload 1h 10threads p", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
+	_, err = db.Exec("Insert INTO Tests (name,timeStart,timeEnd) values ('?','?','?')", "Select range workload 30m 10threads p", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05"))
+	if err != nil {
+		log.Printf("result insert error: %v", err)
+	}
 
 }
