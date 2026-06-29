@@ -11,7 +11,7 @@ func setConnection() (*sql.DB, error) {
 	password := ""
 	host := "192.168.50.3"
 	port := "3306"
-	database := "testdb"
+	database := "testdbp"
 	// Format DSN
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
 

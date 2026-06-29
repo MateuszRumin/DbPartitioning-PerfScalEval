@@ -20,6 +20,7 @@ func multiThreadConnection() {
 
 	var wg sync.WaitGroup
 	start := time.Now()
+	deadline := time.Now().Add(1 * time.Hour)
 
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
@@ -28,7 +29,7 @@ func multiThreadConnection() {
 			defer wg.Done()
 			r := newWorkerRand()
 			wg := sqlgen.NewWorkerGenerator(r)
-			wantConnection(id, r, wg, idp, idu)
+			wantConnection(deadline, id, r, wg, idp, idu)
 		}(i)
 	}
 
@@ -42,6 +43,7 @@ func multiThreadConnection() {
 		return
 	}
 	defer db.Close()
-	db.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')", "Select range workload 1h 10threads", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
+	db.Query(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')",
+		"Select range workload 1h 10threads p", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
 
 }

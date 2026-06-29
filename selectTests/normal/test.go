@@ -26,7 +26,7 @@ func newWorkerRand() *rand.Rand {
 	return rand.New(rand.NewPCG(s1, s2))
 }
 
-func wantConnection(id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, idu int) {
+func wantConnection(deadline time.Time, id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, idu int) {
 	fmt.Println("Worker:", id)
 
 	db, err := setConnection()
@@ -36,8 +36,6 @@ func wantConnection(id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, i
 	}
 	defer db.Close()
 	var qr []QueryResults
-
-	deadline := time.Now().Add(1 * time.Hour)
 
 	for time.Now().Before(deadline) {
 

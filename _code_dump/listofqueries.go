@@ -161,3 +161,35 @@ tags: Records: 38205  Deleted: 0  Skipped: 0  Warnings: 0
 38205 rows affected (0,43 sec)
 
 
+partitioned
+
+users Records: 3473095  Deleted: 0  Skipped: 0  Warnings: 0
+Query OK, 3473095 rows affected (39,57 sec)
+
+posts Records: 21736594  Deleted: 0  Skipped: 0  Warnings: 0
+Query OK, 21736594 rows affected (10 min 21,70 sec)
+
+commants Records: 36585420  Deleted: 0  Skipped: 0  Warnings: 0
+Query OK, 36585420 rows affected (5 min 26,49 sec)
+
+post_history Records: 59019898  Deleted: 0  Skipped: 0  Warnings: 0
+Query OK, 59019898 rows affected (20 min 28,72 sec)
+
+post_links Records: 2271053  Deleted: 0  Skipped: 0  Warnings: 0
+Query OK, 2271053 rows affected (11,99 sec)
+
+votes:Records: 67258370  Deleted: 0  Skipped: 0  Warnings: 0
+Query OK, 67258370 rows affected (5 min 47,41 sec)
+
+
+
+
+badges:Records: 12783309  Deleted: 0  Skipped: 0  Warnings: 0
+Query OK, 12783309 rows affected (1 min 5,48 sec)
+
+
+tags: Records: 38205  Deleted: 0  Skipped: 0  Warnings: 0
+Query OK, 38205 rows affected (0,41 sec)
+
+
+

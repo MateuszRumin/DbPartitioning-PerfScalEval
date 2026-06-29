@@ -84,7 +84,7 @@ ADD CONSTRAINT fk_posts_user_id FOREIGN KEY (owner_user_id) REFERENCES users(id)
 
 
 CREATE TABLE comments (
-	id INT,
+	  id INT,
     post_id INT NULL,
     score INT,
     comment_text VARCHAR(4000),

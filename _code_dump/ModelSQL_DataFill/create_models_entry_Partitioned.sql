@@ -2,14 +2,14 @@ DROP DATABASE IF EXISTS stackexchenege;
 CREATE DATABASE stackexchenege;
 USE stackexchenege;
 
--- Drop tables with correct names (fixing typos from original)
+
 DROP TABLE IF EXISTS badges;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS post_history;
 DROP TABLE IF EXISTS post_links;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS tags;
-DROP TABLE IF EXISTS users;  -- Original had typo 'user' in DROP
+DROP TABLE IF EXISTS users;  
 DROP TABLE IF EXISTS votes;
 
 -- 1. Badges (partitioned by badge_date)
