@@ -19,9 +19,9 @@ func multiThreadConnection() {
 
 	var wg sync.WaitGroup
 	start := time.Now()
-	deadline := time.Now().Add(30 * time.Minute)
+	deadline := time.Now().Add(1 * time.Hour)
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 50; i++ {
 		wg.Add(1)
 
 		go func(id int) {
@@ -42,7 +42,7 @@ func multiThreadConnection() {
 		return
 	}
 	defer db.Close()
-	_, err = db.Exec("Insert INTO Tests (name,timeStart,timeEnd) values (?,?,?)", "Select range workload 30m 10threads p", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05"))
+	_, err = db.Exec("Insert INTO Tests (name,timeStart,timeEnd) values (?,?,?)", "Select range workload 1h 20threads p", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05"))
 	if err != nil {
 		log.Printf("result insert error: %v", err)
 	}
