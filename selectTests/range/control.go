@@ -42,7 +42,7 @@ func multiThreadConnection() {
 		return
 	}
 	defer db.Close()
-	_, err = db.Exec("Insert INTO Tests (name,timeStart,timeEnd) values ('?','?','?')", "Select range workload 1h 10threads p", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05"))
+	_, err = db.Exec("Insert INTO Tests (name,timeStart,timeEnd) values (?,?,?)", "Select range workload 1h 10threads p", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05"))
 	if err != nil {
 		log.Printf("result insert error: %v", err)
 	}
