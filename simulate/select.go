@@ -61,7 +61,10 @@ func selectTest(id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp int, idu i
 
 	for _, d := range qr {
 
-		db2.Exec(fmt.Sprintf("INSERT INTO QueryResults (query_type,timeEnded,duration_ms) VALUES ('%s','%s','%d')", d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds()))
+		_, err = db2.Exec("Insert INTO QueryResults (query_type,timeEnded,duration_ms) values (?,?,?)", d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds())
+		if err != nil {
+			log.Printf("[worker %d] result insert error: %v", id, err)
+		}
 
 	}
 }

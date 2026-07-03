@@ -69,7 +69,9 @@ func main() {
 		return
 	}
 	defer db2.Close()
-	db2.Exec(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')",
-		"Simulate 30m 742 np", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
+	_, err = db2.Exec("Insert INTO Tests (name,timeStart,timeEnd) values (?,?,?)", fmt.Sprintf("SI %d%d%d P", workersCountSelect, workersCountInsert, workersCountUpdate), start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05"))
+	if err != nil {
+		log.Printf("result insert error: %v", err)
+	}
 
 }

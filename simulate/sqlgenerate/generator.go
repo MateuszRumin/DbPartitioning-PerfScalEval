@@ -24,123 +24,45 @@ func randomArea(r *rand.Rand) (time.Time, time.Time) {
 	return randomDate, randomDate2
 }
 
-func (q PostByIDQuery) Generate(r *rand.Rand, idp int, idu int) string {
-
-	return fmt.Sprintf(`SELECT * FROM posts 
-	WHERE id = %d;`,
-		r.IntN(idp))
-}
-
 func (q NewQuestions) Generate(r *rand.Rand, idp int, idu int) string {
 
 	return fmt.Sprintf(`SELECT p.id, p.post_title, p.score, p.view_count, p.answer_count, p.creation_date, u.display_name FROM posts p
 	LEFT JOIN users u ON u.id = p.owner_user_id
 	WHERE p.post_type_id = 1
 	ORDER BY p.creation_date DESC LIMIT %d`,
-		r.IntN(100))
-}
-
-func (q QuestionDetailAndAuthor) Generate(r *rand.Rand, idp int, idu int) string {
-
-	return fmt.Sprintf(`SELECT p.*, u.display_name, u.reputation, u.location FROM posts p
-	LEFT JOIN users u ON u.id = p.owner_user_id
-	WHERE p.id = %d;`,
-		r.IntN(idp))
-}
-
-func (q QuestionAnswers) Generate(r *rand.Rand, idp int, idu int) string {
-
-	return fmt.Sprintf(`SELECT p.id, p.post_body, p.score, p.creation_date, u.display_name FROM posts p
-	LEFT JOIN users u ON u.id = p.owner_user_id
-	WHERE p.parent_id = %d
-	ORDER BY p.score DESC, p.creation_date ASC;`, r.IntN(idp))
-}
-
-func (q QuestionBestAnswers) Generate(r *rand.Rand, idp int, idu int) string {
-
-	return fmt.Sprintf(`SELECT * FROM posts 
-	WHERE parent_id = %d
-	ORDER BY score DESC
-	LIMIT 1;
-	`, r.IntN(idp))
-}
-
-func (q CommentsForPost) Generate(r *rand.Rand, idp int, idu int) string {
-
-	return fmt.Sprintf(`SELECT c.id, c.comment_text, c.score, c.creation_date, u.display_name FROM comments c
-	LEFT JOIN users u ON u.id = c.user_id
-	WHERE c.post_id = %d
-	ORDER BY c.creation_date ASC;
-	`, r.IntN(idp))
-}
-
-func (q UserProfile) Generate(r *rand.Rand, idp int, idu int) string {
-
-	return fmt.Sprintf(`SELECT id, display_name, reputation, creation_date, location, website_url, views FROM users
-	WHERE id = %d;`, r.IntN(idu))
+		r.IntN(100)+1)
 }
 
 func (q UserActivity) Generate(r *rand.Rand, idp int, idu int) string {
 
+	randomDate, randomDate2 := randomArea(r)
+
 	return fmt.Sprintf(`SELECT id, post_title, score, creation_date, post_type_id FROM posts
-	WHERE owner_user_id = %d
+	WHERE owner_user_id = %d AND creation_date >= '%s' AND creation_date < '%s' 
 	ORDER BY creation_date DESC
-	LIMIT 50;
-	`, r.IntN(idu))
-}
-
-func (q PostHistory) Generate(r *rand.Rand, idp int, idu int) string {
-
-	return fmt.Sprintf(`SELECT ph.id, ph.post_text, ph.creation_date, ph.user_id FROM post_history ph
-	WHERE ph.post_id = %d
-	ORDER BY ph.creation_date DESC;
-	`, r.IntN(idp))
-}
-
-func (q ConnectedPosts) Generate(r *rand.Rand, idp int, idu int) string {
-
-	return fmt.Sprintf(`SELECT p2.id, p2.post_title, pl.link_type_id FROM post_links pl
-	JOIN posts p2 ON p2.id = pl.related_post_id
-	WHERE pl.post_id = %d;
-	`, r.IntN(idp))
-}
-
-func (q ReputationTrend) Generate(r *rand.Rand, idp int, idu int) string {
-
-	return fmt.Sprintf(`SELECT u.id, u.display_name, u.reputation, u.upvotes, u.downvotes FROM users u
-	ORDER BY u.reputation DESC LIMIT %d;
-	`, 1+r.IntN(100))
+	LIMIT %d;
+	`, r.IntN(idu)+1, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), 1+r.IntN(50))
 }
 
 func (q TopControversialPosts) Generate(r *rand.Rand, idp int, idu int) string {
 
-	return fmt.Sprintf(`SELECT id, post_title, score FROM posts WHERE post_type_id = 1
-	ORDER BY ABS(score) ASC, view_count DESC LIMIT %d;
-	`, 1+r.IntN(100))
+	randomDate, randomDate2 := randomArea(r)
+
+	return fmt.Sprintf(`SELECT id, post_title, score FROM posts 
+	WHERE post_type_id = 1 AND creation_date >= '%s' AND creation_date < '%s' 
+	ORDER BY ABS(score) ASC LIMIT %d;
+	`, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), 1+r.IntN(100))
 }
 
 func (q TopCommentedPosts) Generate(r *rand.Rand, idp int, idu int) string {
 
+	randomDate, randomDate2 := randomArea(r)
+
 	return fmt.Sprintf(`SELECT id, post_title, comment_count, score FROM posts
-	WHERE post_type_id = 1
+	WHERE post_type_id = 1 AND creation_date >= '%s' AND creation_date < '%s' 
 	ORDER BY comment_count DESC LIMIT %d;
-	`, 1+r.IntN(100))
+	`, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), 1+r.IntN(100))
 }
-
-func (q LastGlobalActivity) Generate(r *rand.Rand, idp int, idu int) string {
-
-	return fmt.Sprintf(`SELECT id, post_type_id, creation_date, owner_user_id FROM posts
-	ORDER BY creation_date DESC LIMIT %d;
-	`, r.IntN(100))
-}
-
-func (q ConnectedPostsMultiple) Generate(r *rand.Rand, idp int, idu int) string {
-
-	return fmt.Sprintf(`SELECT p.id, p.post_title, p.answer_count, p.comment_count FROM posts p
-	WHERE p.id = %d;
-	`, r.IntN(idp))
-}
-
 func (q PopularPosts7d) Generate(r *rand.Rand, idp int, idu int) string {
 
 	randomDate, _ := randomArea(r)
@@ -163,11 +85,13 @@ func (q UserRankingByPostPopularity30d) Generate(r *rand.Rand, idp int, idu int)
 	JOIN posts p ON p.owner_user_id = u.id
 	WHERE p.creation_date >= '%s' AND p.creation_date < '%s'
 	GROUP BY u.id, u.display_name ORDER BY post_count DESC, avg_score DESC LIMIT %d;
-	;
 	`, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), 1+r.IntN(100))
 }
 
 func (q TextSearchPosts) Generate(r *rand.Rand, idp int, idu int) string {
+
+	randomDate, randomDate2 := randomArea(r)
+
 	var fake Faked
 	var condition string
 
@@ -179,13 +103,16 @@ func (q TextSearchPosts) Generate(r *rand.Rand, idp int, idu int) string {
 	}
 
 	return fmt.Sprintf(`SELECT id, post_title, score, creation_date FROM posts
-	WHERE post_type_id = 1 AND (post_title LIKE CONCAT('%%', '%s', '%%') OR post_body LIKE CONCAT('%%', '%s', '%%'))
+	WHERE post_type_id = 1 AND creation_date >= '%s' AND creation_date < '%s'  AND (post_title LIKE CONCAT('%%', '%s', '%%') OR post_body LIKE CONCAT('%%', '%s', '%%'))
 	ORDER BY score DESC LIMIT %d;
 	
-	`, condition, condition, 1+r.IntN(50))
+	`, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), condition, condition, 1+r.IntN(50))
 }
 
 func (q TagSearchPosts) Generate(r *rand.Rand, idp int, idu int) string {
+
+	randomDate, randomDate2 := randomArea(r)
+
 	var fake Faked
 	var condition string
 
@@ -197,12 +124,15 @@ func (q TagSearchPosts) Generate(r *rand.Rand, idp int, idu int) string {
 	}
 
 	return fmt.Sprintf(`SELECT id, post_title, tags, score FROM posts
-	WHERE tags LIKE CONCAT('%%<', '%s', '>%%')
+	WHERE tags LIKE CONCAT('%%<', '%s', '>%%') AND creation_date >= '%s' AND creation_date < '%s' 
 	ORDER BY score DESC LIMIT %d;
-	`, condition, 1+r.IntN(50))
+	`, condition, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), 1+r.IntN(50))
 }
 
 func (q QuestionsForTag) Generate(r *rand.Rand, idp int, idu int) string {
+
+	randomDate, randomDate2 := randomArea(r)
+
 	var fake Faked
 	var condition string
 
@@ -214,8 +144,158 @@ func (q QuestionsForTag) Generate(r *rand.Rand, idp int, idu int) string {
 	}
 
 	return fmt.Sprintf(`SELECT id, post_title, score, creation_date FROM posts
-	WHERE post_type_id = 1 AND tags LIKE CONCAT('%%<', '%s', '>%%')
+	WHERE post_type_id = 1 AND tags LIKE CONCAT('%%<', '%s', '>%%') AND creation_date >= '%s' AND creation_date < '%s' 
 	ORDER BY creation_date DESC
 	LIMIT %d;
-	`, condition, 1+r.IntN(50))
+	`, condition, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), 1+r.IntN(50))
+}
+
+func (q PostByScoreHigh) Generate(r *rand.Rand, idp int, idu int) string {
+
+	randomDate, randomDate2 := randomArea(r)
+
+	return fmt.Sprintf(`SELECT * FROM posts
+	WHERE score > %d AND creation_date >= '%s' AND creation_date < '%s'
+	ORDER BY creation_date DESC LIMIT %d;`,
+		r.IntN(100)+1, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), r.IntN(100)+1)
+}
+
+func (q PostByScoreLow) Generate(r *rand.Rand, idp int, idu int) string {
+
+	randomDate, randomDate2 := randomArea(r)
+
+	return fmt.Sprintf(`SELECT * FROM posts
+    WHERE score < %d AND creation_date >= '%s' AND creation_date < '%s' 
+	ORDER BY creation_date DESC LIMIT %d;`,
+		r.IntN(100)+1, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), 1+r.IntN(100))
+}
+
+func (q PostByViewCoHigh) Generate(r *rand.Rand, idp int, idu int) string {
+
+	randomDate, randomDate2 := randomArea(r)
+
+	return fmt.Sprintf(`SELECT * FROM posts
+    WHERE view_count > %d AND creation_date >= '%s' AND creation_date < '%s' 
+	ORDER BY creation_date DESC LIMIT %d;`,
+		r.IntN(1000)+1, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), r.IntN(100)+1)
+}
+
+func (q PostByViewCoLow) Generate(r *rand.Rand, idp int, idu int) string {
+
+	randomDate, randomDate2 := randomArea(r)
+
+	return fmt.Sprintf(`SELECT * FROM posts
+    WHERE view_count < %d AND creation_date >= '%s' AND creation_date < '%s'
+	ORDER BY creation_date DESC LIMIT %d;`,
+		r.IntN(1000)+1, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), r.IntN(100)+1)
+}
+
+func (q PostsByScoreRange) Generate(r *rand.Rand, idp int, idu int) string {
+	a := r.IntN(1000) + 1
+
+	randomDate, randomDate2 := randomArea(r)
+
+	return fmt.Sprintf(`SELECT * FROM posts
+    WHERE score BETWEEN %d AND %d AND creation_date >= '%s' AND creation_date < '%s'
+	ORDER BY creation_date DESC	LIMIT %d;`,
+		a, a+r.IntN(1000)+1, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), r.IntN(100)+1)
+}
+
+func (q PostsByViewRange) Generate(r *rand.Rand, idp int, idu int) string {
+	a := r.IntN(1000) + 1
+
+	randomDate, randomDate2 := randomArea(r)
+
+	return fmt.Sprintf(`SELECT * FROM posts
+    WHERE view_count BETWEEN %d AND %d AND creation_date >= '%s' AND creation_date < '%s'
+	ORDER BY creation_date DESC LIMIT %d;`,
+		a, a+r.IntN(1000)+1, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), r.IntN(100)+1)
+}
+
+func (q PostByAnswerCount) Generate(r *rand.Rand, idp int, idu int) string {
+
+	randomDate, randomDate2 := randomArea(r)
+
+	return fmt.Sprintf(`SELECT * FROM posts
+    WHERE comment_count > %d AND creation_date >= '%s' AND creation_date < '%s'
+	LIMIT %d;`,
+		r.IntN(1000)+1, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), r.IntN(100)+1)
+}
+
+func (q PostByOwnerAndScore) Generate(r *rand.Rand, idp int, idu int) string {
+
+	randomDate, randomDate2 := randomArea(r)
+
+	return fmt.Sprintf(`SELECT * FROM posts
+    WHERE owner_user_id = %d AND score > %d AND creation_date >= '%s' AND creation_date < '%s'
+	ORDER BY score DESC LIMIT %d;`,
+		r.IntN(idu), r.IntN(1000), randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), r.IntN(100)+1)
+}
+
+func (q UserPosts) Generate(r *rand.Rand, idp int, idu int) string {
+
+	randomDate, randomDate2 := randomArea(r)
+
+	return fmt.Sprintf(`SELECT p.* FROM users u JOIN posts p
+	ON u.id = p.owner_user_id
+    WHERE u.id = %d AND p.creation_date >= '%s' AND p.creation_date < '%s'
+	ORDER BY creation_date DESC;`,
+		r.IntN(idu), randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"))
+}
+
+func (q AveragePostViews) Generate(r *rand.Rand, idp int, idu int) string {
+	randomDate, randomDate2 := randomArea(r)
+
+	return fmt.Sprintf(`SELECT AVG(view_count) FROM posts
+	WHERE creation_date >= '%s' AND creation_date < '%s';`,
+		randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"))
+}
+
+func (q PostPerUser) Generate(r *rand.Rand, idp int, idu int) string {
+	randomDate, randomDate2 := randomArea(r)
+
+	return fmt.Sprintf(`SELECT owner_user_id, COUNT(*) FROM posts
+	WHERE creation_date >= '%s' AND creation_date < '%s'
+	GROUP BY owner_user_id limit %d;	`,
+		randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), r.IntN(100)+1)
+}
+
+func (q SingleDayLookUp) Generate(r *rand.Rand, idp int, idu int) string {
+	randomDate, _ := randomArea(r)
+	rd2 := randomDate.AddDate(0, 0, 1)
+
+	return fmt.Sprintf(`SELECT * FROM posts 
+	WHERE creation_date >= '%s' AND creation_date < '%s'
+	ORDER BY creation_date DESC limit %d;`,
+		randomDate.Format("2006-01-02"), rd2.Format("2006-01-02"), r.IntN(100)+1)
+}
+
+func (q DateRandomAreaScore) Generate(r *rand.Rand, idp int, idu int) string {
+	randomDate, _ := randomArea(r)
+	randomDate2 := randomDate.AddDate(0, 1, 0)
+
+	return fmt.Sprintf(`SELECT * FROM posts 
+	WHERE creation_date >= '%s' AND creation_date < '%s' AND score > %d 
+	ORDER BY creation_date DESC LIMIT %d;`,
+		randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), 500+r.IntN(500), 5+r.IntN(100))
+}
+
+func (q DateRandomAreaViewCount) Generate(r *rand.Rand, idp int, idu int) string {
+	randomDate, _ := randomArea(r)
+	randomDate2 := randomDate.AddDate(0, 1, 0)
+
+	return fmt.Sprintf(`SELECT * FROM posts
+	WHERE creation_date >= '%s' AND creation_date < '%s' AND view_count > %d
+	ORDER BY creation_date DESC LIMIT %d;`,
+		randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), 10+r.IntN(10000), 5+r.IntN(100))
+}
+
+func (q DateRandomAreaOrderScore) Generate(r *rand.Rand, idp int, idu int) string {
+	randomDate, _ := randomArea(r)
+	randomDate2 := randomDate.AddDate(0, 1, 0)
+
+	return fmt.Sprintf(`SELECT id, score, creation_date FROM posts
+	WHERE creation_date >= '%s' AND creation_date < '%s' 
+	ORDER BY score DESC LIMIT %d;`,
+		randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), 5+r.IntN(100))
 }
