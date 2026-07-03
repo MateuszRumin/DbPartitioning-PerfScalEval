@@ -163,7 +163,7 @@ func (q UserRankingByPostPopularity30d) Generate(r *rand.Rand, idp int, idu int)
 	JOIN posts p ON p.owner_user_id = u.id
 	WHERE p.creation_date >= '%s' AND p.creation_date < '%s'
 	GROUP BY u.id, u.display_name ORDER BY post_count DESC, avg_score DESC LIMIT %d;
-	;
+	
 	`, randomDate.Format("2006-01-02"), randomDate2.Format("2006-01-02"), 1+r.IntN(100))
 }
 

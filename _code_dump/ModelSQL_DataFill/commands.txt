@@ -4,7 +4,3 @@ sudo mv Users.7z /var/lib/mysqlfiles
 sudo x name.7z
 
 sudo chown mysql:mysql Users.xml
-
-
-Users
-Tags
