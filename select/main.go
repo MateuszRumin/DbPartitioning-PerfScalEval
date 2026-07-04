@@ -22,7 +22,7 @@ func testEntry() {
 		fmt.Println("Połączenie z bazą danych działa poprawnie.")
 		exp := Experiment{
 			Name:    "Np Select Posts",
-			Queries: Posts,
+			Queries: users,
 			Runs:    1,
 		}
 
@@ -48,7 +48,7 @@ func setConnection() (*sql.DB, error) {
 	password := ""
 	host := "192.168.50.3"
 	port := "3306"
-	database := "testdbp"
+	database := "testdb"
 	// Format DSN
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
 

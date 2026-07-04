@@ -116,7 +116,7 @@ func RunExperiment(db *sql.DB, exp Experiment) []QueryResult {
 	defer db2.Close()
 
 	db2.Exec(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')",
-		"Select post n", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
+		"Select users n", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
 
 	return results
 }
