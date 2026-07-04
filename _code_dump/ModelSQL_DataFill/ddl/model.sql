@@ -43,7 +43,7 @@ ALTER TABLE users
 
 CREATE TABLE posts (
 	id INT,
-    post_type_id INT,
+    post_type_id INT NOT NULL,
     accepted_answer_id INT,
     parent_id INT,
     creation_date DATETIME,
@@ -58,7 +58,8 @@ CREATE TABLE posts (
     tags VARCHAR(500),
     answer_count INT,
     comment_count INT,
-    content_license VARCHAR(100)
+    content_license VARCHAR(100),
+    PRIMARY KEY (id)
 );
 
 ALTER TABLE posts MODIFY id INT NOT NULL;
