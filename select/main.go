@@ -28,6 +28,12 @@ func testEntry() {
 
 		results := RunExperiment(db, exp)
 
+		db2, err := slc()
+		if err != nil {
+			return
+		}
+		defer db2.Close()
+
 		if err := exportCSV("results.csv", results); err != nil {
 			log.Fatal(err)
 		}

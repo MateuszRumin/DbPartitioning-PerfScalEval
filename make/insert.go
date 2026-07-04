@@ -32,7 +32,7 @@ func generateUserInserts() {
 		return
 	}
 
-	const insertCount = 5000
+	const insertCount = 35000
 
 	for i := 0; i < insertCount; i++ {
 		data := fakedata.GenerateUsers()
@@ -130,7 +130,7 @@ func generateCommentInserts() {
 		return
 	}
 
-	const insertCount = 5000
+	const insertCount = 35000
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
@@ -224,7 +224,7 @@ func generatePostHistoryInserts() {
 		return
 	}
 
-	const insertCount = 5000
+	const insertCount = 35000
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 

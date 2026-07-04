@@ -49,7 +49,7 @@ func generatePostUpdates() {
 		return
 	}
 
-	const updateCount = 5000
+	const updateCount = 35000
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
@@ -157,7 +157,7 @@ func generateCommentUpdates() {
 		return
 	}
 
-	const updateCount = 5000
+	const updateCount = 35000
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
@@ -246,7 +246,7 @@ func generatePostHistoryUpdates() {
 		return
 	}
 
-	const updateCount = 5000
+	const updateCount = 35000
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
@@ -338,7 +338,7 @@ func generateUserUpdates() {
 		return
 	}
 
-	const updateCount = 5000
+	const updateCount = 35000
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 

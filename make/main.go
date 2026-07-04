@@ -86,7 +86,7 @@ func generateInsertPosts() {
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	for i := 0; i < 5000; i++ {
+	for i := 0; i < 35000; i++ {
 		data := fakedata.GeneratePosts()
 
 		query := fmt.Sprintf(
@@ -159,7 +159,7 @@ func GetIDs(db *sql.DB, query string) ([]int, error) {
 }
 
 func main() {
-	generateInsertPosts()
+	//generateInsertPosts()
 	//generateUserInserts()
 	//generatePostHistoryInserts()
 	//generateCommentInserts()
@@ -167,6 +167,6 @@ func main() {
 	//generatePostUpdates()
 	//generateUserUpdates()
 	//generateCommentUpdates()
-	//generatePostHistoryUpdates()
+	generatePostHistoryUpdates()
 
 }

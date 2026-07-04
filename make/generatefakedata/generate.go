@@ -68,14 +68,14 @@ func GeneratePosts() Post {
 	if err != nil {
 		fmt.Println("Błąd generacji")
 	}
-	generated.CreationDate = gofakeit.DateRange(
-		time.Date(2008, 07, 31, 0, 0, 0, 0, time.UTC),
-		time.Date(2010, 12, 31, 0, 0, 0, 0, time.UTC),
-	)
 	// generated.CreationDate = gofakeit.DateRange(
-	// 	time.Date(2008, 7, 1, 0, 0, 0, 0, time.UTC),
-	// 	time.Date(2008, 9, 30, 23, 59, 59, 999999999, time.UTC),
+	// 	time.Date(2008, 07, 31, 0, 0, 0, 0, time.UTC),
+	// 	time.Date(2010, 12, 31, 0, 0, 0, 0, time.UTC),
 	// )
+	generated.CreationDate = gofakeit.DateRange(
+		time.Date(2008, 7, 1, 0, 0, 0, 0, time.UTC),
+		time.Date(2008, 9, 30, 23, 59, 59, 999999999, time.UTC),
+	)
 	return generated
 }
 

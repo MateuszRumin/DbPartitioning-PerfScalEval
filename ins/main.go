@@ -44,7 +44,7 @@ func main() {
 
 	start := time.Now()
 
-	for _, query := range PostInsertFull {
+	for _, query := range PostInsert {
 
 		_, err := db.Exec(query)
 		if err != nil {
