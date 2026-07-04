@@ -46,14 +46,13 @@ func main() {
 
 	for _, query := range PostInsertFull {
 
-		rows, err := db.Query(query)
+		_, err := db.Exec(query)
 		if err != nil {
 			e++
 		}
-		defer rows.Close()
 
 	}
-
+	println(e)
 	stop := time.Now()
 
 	db2, err := slc()
