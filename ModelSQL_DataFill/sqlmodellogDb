@@ -1,0 +1,15 @@
+
+
+CREATE TABLE Tests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    timeStart DATETIME NOT NULL,
+    timeEnd DATETIME NULL
+);
+
+CREATE TABLE QueryResults (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    query_type ENUM('SELECT', 'INSERT', 'UPDATE') NOT NULL,
+    timeEnded DATETIME NOT NULL,
+    duration_ms BIGINT NOT NULL  
+);
