@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS post_history;
 DROP TABLE IF EXISTS post_links;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS tags;
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS votes;
 
 
@@ -71,20 +71,6 @@ PARTITION BY RANGE COLUMNS (creation_date) (
     PARTITION p2010_q4 VALUES LESS THAN ('2011-01-01'),
     PARTITION p_future VALUES LESS THAN (MAXVALUE)
 );
-
-
-
-SELECT COUNT(*)
-FROM posts p
-LEFT JOIN users u ON u.id = p.owner_user_id
-WHERE p.owner_user_id IS NOT NULL
-  AND u.id IS NULL;
-
-UPDATE posts p
-LEFT JOIN users u ON u.id = p.owner_user_id
-SET p.owner_user_id = NULL
-WHERE p.owner_user_id IS NOT NULL
-  AND u.id IS NULL;
 
 
 
@@ -202,3 +188,30 @@ ALTER TABLE post_links MODIFY id INT NOT NULL AUTO_INCREMENT;
 ALTER TABLE votes MODIFY id INT NOT NULL AUTO_INCREMENT;
 ALTER TABLE badges MODIFY id INT NOT NULL AUTO_INCREMENT;
 ALTER TABLE tags MODIFY id INT NOT NULL AUTO_INCREMENT;
+
+
+
+ALTER TABLE posts
+    ADD INDEX idx_posts_owner_user_id (owner_user_id);
+
+
+ALTER TABLE comments
+    ADD INDEX idx_comments_post_id (post_id),
+    ADD INDEX idx_comments_user_id (user_id);
+
+
+ALTER TABLE post_history
+    ADD INDEX idx_post_history_post_id (post_id),
+    ADD INDEX idx_post_history_user_id (user_id);
+
+ALTER TABLE post_links
+    ADD INDEX idx_post_links_post_id (post_id),
+    ADD INDEX idx_post_links_related_post_id (related_post_id);
+
+
+ALTER TABLE votes
+    ADD INDEX idx_votes_post_id (post_id);
+
+
+ALTER TABLE badges
+    ADD INDEX idx_badges_user_id (user_id);
