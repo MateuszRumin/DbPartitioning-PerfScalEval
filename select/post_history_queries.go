@@ -1,0 +1,44 @@
+package main
+
+var postHistory = []string{
+	// Q01: 8 rekordów z jednej partycji — p0
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=12 AND ph.post_id=17) OR (ph.id=13 AND ph.post_id=17) OR (ph.id=14 AND ph.post_id=17) OR (ph.id=17 AND ph.post_id=25) OR (ph.id=18 AND ph.post_id=25) OR (ph.id=19 AND ph.post_id=25) OR (ph.id=21 AND ph.post_id=29) OR (ph.id=25 AND ph.post_id=33);",
+	// Q02: 8 rekordów z jednej partycji — p1
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=52 AND ph.post_id=60) OR (ph.id=98 AND ph.post_id=22) OR (ph.id=110 AND ph.post_id=26) OR (ph.id=116 AND ph.post_id=124) OR (ph.id=130 AND ph.post_id=142) OR (ph.id=134 AND ph.post_id=146) OR (ph.id=142 AND ph.post_id=154) OR (ph.id=146 AND ph.post_id=158);",
+	// Q03: 8 rekordów z jednej partycji — p2
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=27 AND ph.post_id=34) OR (ph.id=42 AND ph.post_id=51) OR (ph.id=51 AND ph.post_id=58) OR (ph.id=54 AND ph.post_id=27) OR (ph.id=71 AND ph.post_id=76) OR (ph.id=86 AND ph.post_id=99) OR (ph.id=87 AND ph.post_id=100) OR (ph.id=94 AND ph.post_id=107);",
+	// Q04: 8 rekordów z jednej partycji — p3
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=16 AND ph.post_id=18) OR (ph.id=178 AND ph.post_id=80) OR (ph.id=251 AND ph.post_id=258) OR (ph.id=266 AND ph.post_id=269) OR (ph.id=296 AND ph.post_id=297) OR (ph.id=300 AND ph.post_id=289) OR (ph.id=301 AND ph.post_id=289) OR (ph.id=302 AND ph.post_id=289);",
+	// Q05: 8 rekordów z jednej partycji — p4
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=23 AND ph.post_id=31) OR (ph.id=30 AND ph.post_id=21) OR (ph.id=32 AND ph.post_id=21) OR (ph.id=34 AND ph.post_id=37) OR (ph.id=44 AND ph.post_id=53) OR (ph.id=72 AND ph.post_id=77) OR (ph.id=73 AND ph.post_id=78) OR (ph.id=79 AND ph.post_id=87);",
+	// Q06: 8 rekordów z jednej partycji — p5
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=22 AND ph.post_id=30) OR (ph.id=26 AND ph.post_id=34) OR (ph.id=62 AND ph.post_id=62) OR (ph.id=90 AND ph.post_id=98) OR (ph.id=148 AND ph.post_id=160) OR (ph.id=164 AND ph.post_id=176) OR (ph.id=180 AND ph.post_id=80) OR (ph.id=261 AND ph.post_id=266);",
+	// Q07: 8 rekordów z jednej partycji — p6
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=6 AND ph.post_id=7) OR (ph.id=43 AND ph.post_id=52) OR (ph.id=68 AND ph.post_id=71) OR (ph.id=92 AND ph.post_id=103) OR (ph.id=95 AND ph.post_id=110) OR (ph.id=107 AND ph.post_id=116) OR (ph.id=111 AND ph.post_id=26) OR (ph.id=122 AND ph.post_id=127);",
+	// Q08: 8 rekordów z jednej partycji — p7
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=28 AND ph.post_id=34) OR (ph.id=46 AND ph.post_id=56) OR (ph.id=66 AND ph.post_id=68) OR (ph.id=82 AND ph.post_id=92) OR (ph.id=96 AND ph.post_id=22) OR (ph.id=118 AND ph.post_id=128) OR (ph.id=152 AND ph.post_id=166) OR (ph.id=172 AND ph.post_id=186);",
+	// Q09: Po 4 rekordy z dwóch partycji — p0, p1
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=31 AND ph.post_id=21) OR (ph.id=33 AND ph.post_id=37) OR (ph.id=37 AND ph.post_id=44) OR (ph.id=40 AND ph.post_id=49) OR (ph.id=176 AND ph.post_id=80) OR (ph.id=328 AND ph.post_id=48) OR (ph.id=330 AND ph.post_id=48) OR (ph.id=518 AND ph.post_id=518);",
+	// Q10: Po 4 rekordy z dwóch partycji — p2, p3
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=136 AND ph.post_id=147) OR (ph.id=188 AND ph.post_id=197) OR (ph.id=190 AND ph.post_id=199) OR (ph.id=222 AND ph.post_id=123) OR (ph.id=303 AND ph.post_id=289) OR (ph.id=304 AND ph.post_id=289) OR (ph.id=305 AND ph.post_id=289) OR (ph.id=331 AND ph.post_id=48);",
+	// Q11: Po 4 rekordy z dwóch partycji — p4, p5
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=88 AND ph.post_id=93) OR (ph.id=89 AND ph.post_id=98) OR (ph.id=97 AND ph.post_id=22) OR (ph.id=99 AND ph.post_id=111) OR (ph.id=263 AND ph.post_id=268) OR (ph.id=272 AND ph.post_id=274) OR (ph.id=274 AND ph.post_id=276) OR (ph.id=288 AND ph.post_id=290);",
+	// Q12: Po 4 rekordy z dwóch partycji — p6, p7
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=124 AND ph.post_id=135) OR (ph.id=135 AND ph.post_id=146) OR (ph.id=154 AND ph.post_id=167) OR (ph.id=160 AND ph.post_id=175) OR (ph.id=257 AND ph.post_id=263) OR (ph.id=258 AND ph.post_id=263) OR (ph.id=259 AND ph.post_id=263) OR (ph.id=260 AND ph.post_id=263);",
+	// Q13: Po 2 rekordy z czterech partycji — p0, p1, p2, p3
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=53 AND ph.post_id=27) OR (ph.id=64 AND ph.post_id=65) OR (ph.id=530 AND ph.post_id=530) OR (ph.id=564 AND ph.post_id=564) OR (ph.id=531 AND ph.post_id=532) OR (ph.id=536 AND ph.post_id=541) OR (ph.id=342 AND ph.post_id=329) OR (ph.id=348 AND ph.post_id=337);",
+	// Q14: Po 2 rekordy z czterech partycji — p4, p5, p6, p7
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=105 AND ph.post_id=114) OR (ph.id=123 AND ph.post_id=127) OR (ph.id=290 AND ph.post_id=292) OR (ph.id=297 AND ph.post_id=298) OR (ph.id=162 AND ph.post_id=175) OR (ph.id=163 AND ph.post_id=176) OR (ph.id=283 AND ph.post_id=283) OR (ph.id=289 AND ph.post_id=291);",
+	// Q15: Po 2 rekordy z czterech partycji — p0, p2, p4, p6
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=74 AND ph.post_id=73) OR (ph.id=75 AND ph.post_id=73) OR (ph.id=587 AND ph.post_id=566) OR (ph.id=620 AND ph.post_id=605) OR (ph.id=127 AND ph.post_id=139) OR (ph.id=131 AND ph.post_id=143) OR (ph.id=179 AND ph.post_id=80) OR (ph.id=198 AND ph.post_id=210);",
+	// Q16: Po 2 rekordy z czterech partycji — p1, p3, p5, p7
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=590 AND ph.post_id=566) OR (ph.id=606 AND ph.post_id=598) OR (ph.id=349 AND ph.post_id=337) OR (ph.id=350 AND ph.post_id=337) OR (ph.id=309 AND ph.post_id=304) OR (ph.id=310 AND ph.post_id=304) OR (ph.id=312 AND ph.post_id=307) OR (ph.id=329 AND ph.post_id=48);",
+	// Q17: Po 1 rekordzie z każdej z 8 partycji
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=76 AND ph.post_id=81) OR (ph.id=608 AND ph.post_id=600) OR (ph.id=622 AND ph.post_id=589) OR (ph.id=370 AND ph.post_id=357) OR (ph.id=137 AND ph.post_id=148) OR (ph.id=316 AND ph.post_id=310) OR (ph.id=519 AND ph.post_id=519) OR (ph.id=343 AND ph.post_id=331);",
+	// Q18: Po 1 innym rekordzie z każdej z 8 partycji
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ph.id=77 AND ph.post_id=82) OR (ph.id=640 AND ph.post_id=608) OR (ph.id=625 AND ph.post_id=611) OR (ph.id=371 AND ph.post_id=357) OR (ph.id=138 AND ph.post_id=149) OR (ph.id=339 AND ph.post_id=328) OR (ph.id=525 AND ph.post_id=525) OR (ph.id=346 AND ph.post_id=335);",
+	// Q19: Te same rekordy co Q01 — pruning celowo wyłączony
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ABS(ph.id)=12 AND ABS(ph.post_id)=17) OR (ABS(ph.id)=13 AND ABS(ph.post_id)=17) OR (ABS(ph.id)=14 AND ABS(ph.post_id)=17) OR (ABS(ph.id)=17 AND ABS(ph.post_id)=25) OR (ABS(ph.id)=18 AND ABS(ph.post_id)=25) OR (ABS(ph.id)=19 AND ABS(ph.post_id)=25) OR (ABS(ph.id)=21 AND ABS(ph.post_id)=29) OR (ABS(ph.id)=25 AND ABS(ph.post_id)=33);",
+	// Q20: Te same rekordy co Q09 — pruning celowo wyłączony
+	"SELECT ph.id,ph.post_id,ph.post_history_type_id,ph.creation_date,ph.user_id FROM post_history AS ph USE INDEX () WHERE (ABS(ph.id)=31 AND ABS(ph.post_id)=21) OR (ABS(ph.id)=33 AND ABS(ph.post_id)=37) OR (ABS(ph.id)=37 AND ABS(ph.post_id)=44) OR (ABS(ph.id)=40 AND ABS(ph.post_id)=49) OR (ABS(ph.id)=176 AND ABS(ph.post_id)=80) OR (ABS(ph.id)=328 AND ABS(ph.post_id)=48) OR (ABS(ph.id)=330 AND ABS(ph.post_id)=48) OR (ABS(ph.id)=518 AND ABS(ph.post_id)=518);",
+}

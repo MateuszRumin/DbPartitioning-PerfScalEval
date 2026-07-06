@@ -10,7 +10,6 @@ import (
 
 func executeQuery(db *sql.DB, query string) (
 	duration time.Duration,
-	firstRow time.Duration,
 	rowCount int,
 	err error,
 ) {
@@ -18,13 +17,13 @@ func executeQuery(db *sql.DB, query string) (
 
 	rows, err := db.Query(query)
 	if err != nil {
-		return time.Since(start), 0, 0, err
+		return time.Since(start), 0, err
 	}
 
 	columns, err := rows.Columns()
 	if err != nil {
 		rows.Close()
-		return time.Since(start), 0, 0, err
+		return time.Since(start), 0, err
 	}
 
 	// Przygotowanie odbiorników dla dowolnej liczby kolumn.
@@ -39,13 +38,13 @@ func executeQuery(db *sql.DB, query string) (
 
 	for rows.Next() {
 		if !firstRowMeasured {
-			firstRow = time.Since(start)
+
 			firstRowMeasured = true
 		}
 
 		if err := rows.Scan(destinations...); err != nil {
 			rows.Close()
-			return time.Since(start), firstRow, rowCount, err
+			return time.Since(start), rowCount, err
 		}
 
 		rowCount++
@@ -53,70 +52,101 @@ func executeQuery(db *sql.DB, query string) (
 
 	if err := rows.Err(); err != nil {
 		rows.Close()
-		return time.Since(start), firstRow, rowCount, err
+		return time.Since(start), rowCount, err
 	}
 
 	if err := rows.Close(); err != nil {
-		return time.Since(start), firstRow, rowCount, err
+		return time.Since(start), rowCount, err
 	}
 
 	duration = time.Since(start)
 
-	return duration, firstRow, rowCount, nil
+	return duration, rowCount, nil
 }
 
 func RunExperiment(db *sql.DB, exp Experiment) []QueryResult {
-
-	// EXPLAIN wykonujemy raz, poza właściwym pomiarem.
-	explainCache := make(map[string]QueryResult)
+	// EXPLAIN wykonujemy raz dla każdego zapytania.
+	explainCache := make(map[string]QueryResult, len(exp.Queries))
 
 	for _, query := range exp.Queries {
 		exRows, partitions, err := Explain(db, query)
-		if err == nil {
+		if err != nil {
 			explainCache[query] = QueryResult{
-				ExplainRows: exRows,
-				Partitions:  partitions,
+				Query: query,
+				Err:   fmt.Errorf("EXPLAIN: %w", err),
 			}
+			continue
+		}
+
+		explainCache[query] = QueryResult{
+			Query:       query,
+			ExplainRows: exRows,
+			Partitions:  partitions,
 		}
 	}
 
-	results := make(
-		[]QueryResult,
-		0,
-		exp.Runs*len(exp.Queries),
-	)
-	start := time.Now()
+	type aggregate struct {
+		totalDuration time.Duration
+		totalRows     int64
+		successCount  int64
+		firstErr      error
+	}
 
-	// Właściwy pomiar.
+	aggregates := make(map[string]*aggregate, len(exp.Queries))
+
+	for _, query := range exp.Queries {
+		aggregates[query] = &aggregate{}
+	}
+
 	for run := 0; run < exp.Runs; run++ {
 		for _, query := range exp.Queries {
-			duration, firstRow, rowCount, err :=
-				executeQuery(db, query)
+			duration, rowCount, err := executeQuery(db, query)
 
-			explain := explainCache[query]
+			agg := aggregates[query]
 
-			results = append(results, QueryResult{
-				Query:       query,
-				Duration:    duration,
-				FirstRow:    firstRow,
-				Rows:        rowCount,
-				ExplainRows: explain.ExplainRows,
-				Partitions:  explain.Partitions,
-				Err:         err,
-			})
+			if err != nil {
+				if agg.firstErr == nil {
+					agg.firstErr = err
+				}
+				continue
+			}
+
+			agg.totalDuration += duration
+			agg.totalRows += int64(rowCount)
+			agg.successCount++
 		}
 	}
 
-	stop := time.Now()
+	results := make([]QueryResult, 0, len(exp.Queries))
 
-	db2, err := slc()
-	if err != nil {
-		return results
+	for _, query := range exp.Queries {
+		agg := aggregates[query]
+		explain := explainCache[query]
+
+		result := QueryResult{
+			Query:       query,
+			ExplainRows: explain.ExplainRows,
+			Partitions:  explain.Partitions,
+		}
+
+		if agg.successCount == 0 {
+			if agg.firstErr != nil {
+				result.Err = agg.firstErr
+			} else {
+				result.Err = fmt.Errorf("brak poprawnych wykonań zapytania")
+			}
+
+			results = append(results, result)
+			continue
+		}
+
+		result.Duration = agg.totalDuration / time.Duration(agg.successCount)
+		result.Rows = int(agg.totalRows / agg.successCount)
+
+		result.Err = agg.firstErr
+
+		results = append(results, result)
 	}
-	defer db2.Close()
-
-	db2.Exec(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('%s','%s','%s')",
-		"PP Select postH", start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
 
 	return results
 }

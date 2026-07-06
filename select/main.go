@@ -21,9 +21,9 @@ func testEntry() {
 	} else {
 		fmt.Println("Połączenie z bazą danych działa poprawnie.")
 		exp := Experiment{
-			Name:    "Np Select Posts",
-			Queries: postH,
-			Runs:    1,
+			Name:    "postHistory",
+			Queries: Posts,
+			Runs:    2,
 		}
 
 		results := RunExperiment(db, exp)
@@ -48,7 +48,7 @@ func setConnection() (*sql.DB, error) {
 	password := ""
 	host := "192.168.50.3"
 	port := "3306"
-	database := "testdbp"
+	database := "testdb"
 	// Format DSN
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database)
 
@@ -78,7 +78,6 @@ func exportCSV(path string, results []QueryResult) error {
 
 	w.Write([]string{
 		"duration_ns",
-		"first_row_ns",
 		"rows",
 		"explain_rows",
 		"partitions",
@@ -87,7 +86,6 @@ func exportCSV(path string, results []QueryResult) error {
 	for _, r := range results {
 		w.Write([]string{
 			strconv.FormatInt(r.Duration.Nanoseconds(), 10),
-			strconv.FormatInt(r.FirstRow.Nanoseconds(), 10),
 			strconv.Itoa(r.Rows),
 			strconv.Itoa(r.ExplainRows),
 			r.Partitions,

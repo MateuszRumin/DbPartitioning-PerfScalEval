@@ -159,14 +159,14 @@ func GetIDs(db *sql.DB, query string) ([]int, error) {
 }
 
 func main() {
-	generateInsertPosts()
-	// generateUserInserts()
-	// generatePostHistoryInserts()
-	// generateCommentInserts()
-
-	// generatePostUpdates()
-	// generateUserUpdates()
-	// generateCommentUpdates()
-	// generatePostHistoryUpdates()
-
+	//generateInsertPosts()
+	//generateUserInserts()
+	//generatePostHistoryInserts()
+	//generateCommentInserts()
+	//generatePostUpdates()
+	//generateUserUpdates()
+	//generateCommentUpdates()
+	//generatePostHistoryUpdates()
+	//generateUserHashTests()
+	generatePostHistoryQueries()
 }

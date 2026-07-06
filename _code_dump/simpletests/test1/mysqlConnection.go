@@ -81,7 +81,6 @@ func RunExperiment(db *sql.DB, exp Experiment) []QueryResult {
 				continue
 			}
 
-			first := time.Now()
 			rowCount := 0
 
 			for rows.Next() {
@@ -91,7 +90,6 @@ func RunExperiment(db *sql.DB, exp Experiment) []QueryResult {
 			}
 
 			total := time.Since(start)
-			firstRow := first.Sub(start)
 
 			rows.Close()
 
@@ -100,7 +98,6 @@ func RunExperiment(db *sql.DB, exp Experiment) []QueryResult {
 			results = append(results, QueryResult{
 				Query:       q,
 				Duration:    total,
-				FirstRow:    firstRow,
 				Rows:        rowCount,
 				ExplainRows: exRows,
 				Partitions:  parts,
