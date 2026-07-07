@@ -7,6 +7,8 @@ import (
 	"sync"
 	"time"
 
+	sqlgen "range/sqlgenerate"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -33,10 +35,7 @@ func GetIDs(db *sql.DB, query string) ([]int, error) {
 	return ids, nil
 }
 
-func multiThread() {
-
-	var wg sync.WaitGroup
-
+func multiThreadConnection() {
 	db, err := setConnection()
 	if err != nil {
 		log.Printf("Błąd połączenia: %v", err)
@@ -44,18 +43,16 @@ func multiThread() {
 	}
 	defer db.Close()
 
-	idb, errb := GetIDs(db, "SELECT id FROM badges")
-	idc, errc := GetIDs(db, "SELECT id FROM comments")
-	idph, errph := GetIDs(db, "SELECT id FROM post_history")
 	idp, errp := GetIDs(db, "SELECT id FROM posts")
 	idu, erru := GetIDs(db, "SELECT id FROM users")
-	if errb != nil || errc != nil || errph != nil || errp != nil || erru != nil {
+	if errp != nil || erru != nil {
 		fmt.Printf("Brak danych o indeksach")
 		return
 	}
 	threads := 50
-	start := time.Now()
 
+	var wg sync.WaitGroup
+	start := time.Now()
 	deadline := time.Now().Add(10 * time.Minute)
 
 	for i := 0; i < threads; i++ {
@@ -63,7 +60,9 @@ func multiThread() {
 
 		go func(id int) {
 			defer wg.Done()
-			checkConnectionAndRunTest(deadline, idb, idc, idph, idp, idu)
+			r := newWorkerRand()
+			wg := sqlgen.NewWorkerGenerator(r)
+			wantConnection(deadline, id, r, wg, idp, idu)
 		}(i)
 	}
 
@@ -77,7 +76,7 @@ func multiThread() {
 	}
 	defer db2.Close()
 
-	db2.Exec(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('I %d P','%s','%s')",
+	db2.Exec(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('SR %d Niepartycjonowana','%s','%s')",
 		threads, start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
 
 }

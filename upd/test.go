@@ -19,18 +19,12 @@ func escapeSQL(s string) string {
 	return strings.ReplaceAll(s, "'", "''")
 }
 
-func chooseTable(idb []int, idc []int, idph []int, idp []int, idu []int) string {
-
+func chooseTable(idc []int, idph []int, idp []int, idu []int) string {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	whatTable := []string{"badges", "comments", "posthistory", "posts", "users"}
+	whatTable := []string{"comments", "posthistory", "posts", "users"}
 	randomIndex := r.Intn(len(whatTable))
 
 	switch whatTable[randomIndex] {
-	case "badges":
-		data := fakedata.GenerateBadge()
-		return fmt.Sprintf("Update badges SET badge_name = '%s', badge_date = '%s', class = %d, tag_based = '%s' WHERE id = %d;",
-			escapeSQL(data.BadgeName), data.BadgeDate.Format("2006-01-02 15:04:05"), data.Class, escapeSQL(data.TagBased), idb[r.Intn(len(idb))])
-
 	case "comments":
 		data := fakedata.GenerateComments()
 		return fmt.Sprintf("Update comments SET score = %d, comment_text = '%s', creation_date = '%s', user_id = %d, content_license = '%s' WHERE id = %d;",
@@ -61,7 +55,7 @@ func chooseTable(idb []int, idc []int, idph []int, idp []int, idu []int) string 
 
 }
 
-func checkConnectionAndRunTest(deadline time.Time, idb []int, idc []int, idph []int, idp []int, idu []int) {
+func checkConnectionAndRunTest(deadline time.Time, idc []int, idph []int, idp []int, idu []int) {
 	db, err := setConnection()
 	if err != nil {
 		log.Printf("Błąd połączenia: %v", err)
@@ -73,7 +67,7 @@ func checkConnectionAndRunTest(deadline time.Time, idb []int, idc []int, idph []
 
 	for time.Now().Before(deadline) {
 
-		query := chooseTable(idb, idc, idph, idp, idu)
+		query := chooseTable(idc, idph, idp, idu)
 		start := time.Now()
 		err := executeQuery(db, query)
 		if err != nil {

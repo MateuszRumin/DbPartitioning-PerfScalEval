@@ -6,7 +6,7 @@ import (
 )
 
 type QueryGenerator interface {
-	Generate(r *rand.Rand, idp int, idu int) string
+	Generate(r *rand.Rand, idp []int, idu []int) string
 }
 
 type NewQuestions struct{}
@@ -92,7 +92,7 @@ func NewWorkerGenerator(r *rand.Rand) *WorkerGenerator {
 	w.Total = sum
 	return w
 }
-func (wg *WorkerGenerator) GenerateRandomQuery(r *rand.Rand, idp, idu int) string {
+func (wg *WorkerGenerator) GenerateRandomQuery(r *rand.Rand, idp, idu []int) string {
 	pick := r.IntN(wg.Total)
 
 	i := sort.Search(len(wg.Prefix), func(i int) bool {
