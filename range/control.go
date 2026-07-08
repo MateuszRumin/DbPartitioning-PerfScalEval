@@ -50,7 +50,7 @@ func multiThreadConnection() {
 		return
 	}
 	threads := 50
-
+	resultsByWorker := make([][]QueryResults, threads)
 	var wg sync.WaitGroup
 	start := time.Now()
 	deadline := time.Now().Add(10 * time.Minute)
@@ -62,7 +62,7 @@ func multiThreadConnection() {
 			defer wg.Done()
 			r := newWorkerRand()
 			wg := sqlgen.NewWorkerGenerator(r)
-			wantConnection(deadline, id, r, wg, idp, idu)
+			resultsByWorker[id] = wantConnection(deadline, id, r, wg, idp, idu)
 		}(i)
 	}
 
@@ -79,4 +79,7 @@ func multiThreadConnection() {
 	db2.Exec(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('SR %d Niepartycjonowana','%s','%s')",
 		threads, start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
 
+	if err := saveQueryResults(db2, resultsByWorker); err != nil {
+		log.Printf("result save error: %v", err)
+	}
 }

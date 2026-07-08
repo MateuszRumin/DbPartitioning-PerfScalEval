@@ -26,13 +26,13 @@ func newWorkerRand() *rand.Rand {
 	return rand.New(rand.NewPCG(s1, s2))
 }
 
-func wantConnection(deadline time.Time, id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp []int, idu []int) {
+func wantConnection(deadline time.Time, id int, r *rand.Rand, wg *sqlgen.WorkerGenerator, idp []int, idu []int) []QueryResults {
 	fmt.Println("Worker:", id)
 
 	db, err := setConnection()
 	if err != nil {
 		log.Printf("[worker %d] DB error: %v", id, err)
-		return
+		return nil
 	}
 	defer db.Close()
 	var qr []QueryResults
@@ -60,19 +60,5 @@ func wantConnection(deadline time.Time, id int, r *rand.Rand, wg *sqlgen.WorkerG
 
 	}
 
-	db2, err := slc()
-	if err != nil {
-
-		return
-	}
-	defer db2.Close()
-
-	for _, d := range qr {
-
-		_, err = db2.Exec("Insert INTO QueryResults (query_type,timeEnded,duration_ms) values (?,?,?)", d.qtype, d.end.Format("2006-01-02 15:04:05"), d.duration.Milliseconds())
-		if err != nil {
-			log.Printf("[worker %d] result insert error: %v", id, err)
-		}
-
-	}
+	return qr
 }
