@@ -51,7 +51,11 @@ func multiThreadConnection() {
 		return
 	}
 	threads := 50
+
 	var wg sync.WaitGroup
+
+	resultsByWorker := make([][]QueryResults, threads)
+
 	start := time.Now()
 	deadline := time.Now().Add(10 * time.Minute)
 
@@ -61,8 +65,13 @@ func multiThreadConnection() {
 		go func(id int) {
 			defer wg.Done()
 			r := newWorkerRand()
-			wg := sqlgen.NewWorkerGenerator(r)
-			wantConnection(deadline, id, r, wg, idp, idu)
+			wg, err := sqlgen.NewWorkerGenerator(sqlgen.ReadGenerators)
+			if err != nil {
+				log.Printf("Błąd tworzenia generatora: %v", err)
+				return
+			}
+			resultsByWorker[id] = wantConnection(deadline, id, r, wg, idp, idu)
+
 		}(i)
 	}
 
@@ -78,5 +87,9 @@ func multiThreadConnection() {
 
 	db2.Exec(fmt.Sprintf("Insert INTO Tests (name,timeStart,timeEnd) values ('SN %d Niepartycjonowana','%s','%s')",
 		threads, start.Format("2006-01-02 15:04:05"), stop.Format("2006-01-02 15:04:05")))
+
+	if err := saveQueryResults(db2, resultsByWorker); err != nil {
+		log.Printf("result save error: %v", err)
+	}
 
 }
