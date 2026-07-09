@@ -41,14 +41,38 @@ def show_comments(post_id):
         """,
         (post_id,),
     )
-    if comments:
-        with st.expander(f"Komentarze ({len(comments)})"):
-            for comment in comments:
-                st.caption(
-                    f"{comment['creation_date']:%Y-%m-%d %H:%M} · "
-                    f"wynik: {comment['score'] or 0}"
-                )
-                st.write(comment["comment_text"] or "")
+    with st.expander(f"Komentarze ({len(comments)})", expanded=False):
+        if not comments:
+            st.caption("Brak komentarzy.")
+        for comment in comments:
+            st.caption(
+                f"{comment['creation_date']:%Y-%m-%d %H:%M} · "
+                f"wynik: {comment['score'] or 0}"
+            )
+            st.write(comment["comment_text"] or "")
+
+
+def show_history(post_id):
+    history = sql(
+        """
+        SELECT post_history_type_id, creation_date, post_text
+        FROM post_history
+        WHERE post_id = %s
+        ORDER BY creation_date
+        """,
+        (post_id,),
+    )
+    with st.expander(f"Historia posta ({len(history)})", expanded=False):
+        if not history:
+            st.caption("Brak historii posta.")
+        for entry in history:
+            st.caption(
+                f"{entry['creation_date']:%Y-%m-%d %H:%M} · "
+                f"typ: {entry['post_history_type_id']}"
+            )
+            if entry["post_text"]:
+                st.write(entry["post_text"])
+            st.divider()
 
 
 def show_question(question_id):
@@ -59,7 +83,7 @@ def show_question(question_id):
     question = sql(
         """
         SELECT id, post_title, post_body, creation_date,
-               score, view_count, tags
+               score, view_count, tags, answer_count, accepted_answer_id
         FROM posts
         WHERE id = %s AND post_type_id = 1
         """,
@@ -79,26 +103,49 @@ def show_question(question_id):
     )
     st.markdown(question["post_body"] or "Brak treści", unsafe_allow_html=True)
     show_comments(question_id)
+    show_history(question_id)
 
+    accepted_answer_id = question["accepted_answer_id"]
     answers = sql(
         """
-        SELECT id, post_body, creation_date, score
+        SELECT id, parent_id, post_type_id, post_body, creation_date, score
         FROM posts
-        WHERE parent_id = %s AND post_type_id = 2
-        ORDER BY score DESC, creation_date
+        WHERE parent_id = %s
+           OR id = %s
+        ORDER BY (id = %s) DESC, score DESC, creation_date
         """,
-        (question_id,),
+        (
+            question_id,
+            accepted_answer_id,
+            accepted_answer_id,
+        ),
     )
 
     st.header(f"Odpowiedzi ({len(answers)})")
+    if not answers:
+        if (question["answer_count"] or 0) > 0:
+            st.warning(
+                "Pytanie ma answer_count > 0, ale w tabeli posts nie znaleziono "
+                "rekordów z parent_id równym id pytania."
+            )
+        else:
+            st.caption("Brak odpowiedzi.")
+
     for answer in answers:
         with st.container(border=True):
+            is_accepted = answer["id"] == accepted_answer_id
+            accepted = " · zaakceptowana" if is_accepted else ""
             st.caption(
+                f"Odpowiedź #{answer['id']} · "
                 f"{answer['creation_date']:%Y-%m-%d %H:%M} · "
-                f"wynik: {answer['score'] or 0}"
+                f"wynik: {answer['score'] or 0}{accepted}"
             )
-            st.markdown(answer["post_body"] or "Brak treści", unsafe_allow_html=True)
+            st.markdown(
+                answer["post_body"] or "Brak treści odpowiedzi",
+                unsafe_allow_html=True,
+            )
             show_comments(answer["id"])
+            show_history(answer["id"])
 
 
 def show_search():
@@ -116,21 +163,54 @@ def show_search():
     first_date = bounds["first_date"].date()
     last_date = bounds["last_date"].date()
 
-    title = st.text_input("Tytuł zawiera")
-    tag = st.text_input("Tag", placeholder="np. mysql")
+    
+    st.session_state.setdefault("saved_title", "")
+    st.session_state.setdefault("saved_tag", "")
+    st.session_state.setdefault("saved_start_date", first_date)
+    st.session_state.setdefault("saved_end_date", last_date)
+    st.session_state.setdefault("saved_limit", 50)
+
+    widget_defaults = {
+        "title_widget": st.session_state["saved_title"],
+        "tag_widget": st.session_state["saved_tag"],
+        "start_date_widget": st.session_state["saved_start_date"],
+        "end_date_widget": st.session_state["saved_end_date"],
+        "limit_widget": st.session_state["saved_limit"],
+    }
+    for key, value in widget_defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
+
+    title = st.text_input("Tytuł zawiera", key="title_widget")
+    tag = st.text_input(
+        "Tag",
+        placeholder="np. mysql",
+        key="tag_widget",
+    )
     start_date = st.date_input(
-        "Zakres dat",
-        value=(first_date),
+        "Data 1",
         min_value=first_date,
         max_value=last_date,
+        key="start_date_widget",
     )
     end_date = st.date_input(
-        "Zakres dat (drugi)",
-        value= (last_date),
+        "Data 2",
         min_value=first_date,
         max_value=last_date,
+        key="end_date_widget",
     )
-    limit = st.number_input("Limit", min_value=1, max_value=500, value=50)
+    limit = st.number_input(
+        "Limit",
+        min_value=1,
+        max_value=500,
+        key="limit_widget",
+    )
+
+    st.session_state["saved_title"] = title
+    st.session_state["saved_tag"] = tag
+    st.session_state["saved_start_date"] = start_date
+    st.session_state["saved_end_date"] = end_date
+    st.session_state["saved_limit"] = int(limit)
 
     if start_date > end_date:
         st.info("Data początkowa nie może być późniejsza niż końcowa.")

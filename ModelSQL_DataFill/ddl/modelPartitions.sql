@@ -215,3 +215,6 @@ ALTER TABLE votes
 
 ALTER TABLE badges
     ADD INDEX idx_badges_user_id (user_id);
+
+ALTER TABLE posts
+ADD INDEX idx_posts_parent_id (parent_id);

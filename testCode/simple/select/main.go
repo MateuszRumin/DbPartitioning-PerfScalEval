@@ -22,7 +22,7 @@ func testEntry() {
 		fmt.Println("Połączenie z bazą danych działa poprawnie.")
 		exp := Experiment{
 			Name:    "Np Select Posts",
-			Queries: postH,
+			Queries: Posts,
 			Runs:    1,
 		}
 
