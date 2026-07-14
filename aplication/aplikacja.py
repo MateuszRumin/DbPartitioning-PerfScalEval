@@ -1,4 +1,5 @@
 from datetime import datetime, time, timedelta
+from time import perf_counter
 
 import mysql.connector
 import streamlit as st
@@ -76,6 +77,9 @@ def show_history(post_id):
 
 
 def show_question(question_id):
+    load_started = perf_counter()
+    load_time = st.empty()
+
     if st.button("← Wróć"):
         del st.session_state["question_id"]
         st.rerun()
@@ -147,9 +151,17 @@ def show_question(question_id):
             show_comments(answer["id"])
             show_history(answer["id"])
 
+    load_time.caption(
+        f"Czas pobrania i przygotowania danych: "
+        f"{perf_counter() - load_started:.3f} s"
+    )
+
 
 def show_search():
+    load_started = perf_counter()
+
     st.title("Wyszukiwanie pytań")
+    load_time = st.empty()
 
     bounds = sql(
         """
@@ -261,6 +273,11 @@ def show_search():
             st.session_state["question_id"] = question["id"]
             st.rerun()
         st.divider()
+
+    load_time.caption(
+        f"Czas pobrania i przygotowania danych: "
+        f"{perf_counter() - load_started:.3f} s"
+    )
 
 
 try:
