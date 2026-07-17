@@ -207,4 +207,8 @@ ALTER TABLE tags ADD PRIMARY KEY (id);
 ALTER TABLE tags MODIFY id INT NOT NULL AUTO_INCREMENT;
 
 
+ALTER TABLE posts
+ADD INDEX idx_posts_creation_date (creation_date);
+
+
 
